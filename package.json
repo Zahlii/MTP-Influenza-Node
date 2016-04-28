@@ -1,0 +1,25 @@
+{
+  "name": "mtp_influenza_node",
+  "version": "1.0.0",
+  "description": "Node js backend for the Master team project at University Mannheim",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zahlii/MTP-Influenza-Node.git"
+  },
+  "author": "Uni Mannheim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Zahlii/MTP-Influenza-Node/issues"
+  },
+  "homepage": "https://github.com/Zahlii/MTP-Influenza-Node#readme",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "jade": "^1.11.0",
+    "mysql": "^2.10.2"
+  }
+}
