@@ -17,7 +17,7 @@ module.exports.getHealthReportsAroundLocationAtDate = function(lat, lng, date, d
     connection.query(
         'SELECT lat, lng, health_score, distance(lat,lng,?,?) AS distance FROM health_report'
         +' JOIN location ON health_report.location_id = location.id'
-        +' WHERE time_sent BETWEEN ? AND ? HAVING distance < 60000',[lat,lng,dateStart,dateEnd],function(err, rows, fields) {
+        +' WHERE is_sick = 1 AND time_observed BETWEEN ? AND ? HAVING distance < 60000',[lat,lng,dateStart,dateEnd],function(err, rows, fields) {
             done(err,rows,fields);
         }
     );
