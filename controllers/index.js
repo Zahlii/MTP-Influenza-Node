@@ -6,7 +6,7 @@ router.get('/', function (req, res) {
     res.send('Hello.');
 });
 
-router.use('/heatmap', require('./heatmap'));
+router.use('/api/+'+global.API_VERSION+'/heatmap', require('./heatmap'));
 
 
 module.exports = router;

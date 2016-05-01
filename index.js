@@ -3,6 +3,7 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
     app = express();
 
+global.API_VERSION = 1;
 
 
 // Set up view engine
