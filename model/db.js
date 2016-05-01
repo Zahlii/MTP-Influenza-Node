@@ -8,11 +8,17 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-connection.query('SELECT 1+1 AS solution', function(err, rows, fields) {
-    if (!err)
-        console.log('The solution is: ', rows);
-    else
-        console.log('Error while performing Query.', err);
-});
+module.exports.getHealthReportsAroundLocationAtDate = function(lat, lng, date, done) {
+    var ts = date.getTime(),
+        ts = ts - ts % 86400*1000,
+        dateStart = new Date(ts),
+        dateEnd = new Date(ts + 86400*1000);
 
-connection.end();
+    connection.query(
+        'SELECT lat, lng, health_score, distance(lat,lng,?,?) AS distance FROM health_report'
+        +' JOIN location ON health_report.location_id = location.id'
+        +' WHERE time_sent BETWEEN ? AND ? HAVING distance < 60000',[lat,lng,dateStart,dateEnd],function(err, rows, fields) {
+            done(err,rows,fields);
+        }
+    );
+};
