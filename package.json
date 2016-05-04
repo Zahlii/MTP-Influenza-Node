@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Zahlii/MTP-Influenza-Node#readme",
   "dependencies": {
     "body-parser": "^1.15.0",
+    "compression": "^1.6.1",
     "express": "^4.13.4",
     "jade": "^1.11.0",
     "mysql": "^2.10.2"
