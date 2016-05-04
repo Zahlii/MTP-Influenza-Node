@@ -22,7 +22,8 @@ app.use(require('./controllers'));
 
 // Start server
 app.listen(port, function () {
-	console.log('Listening on port ' + port)
+	console.log('Listening on port ' + port);
+	console.log('Root path = /api/'+global.API_VERSION+'/');
 });
 
 
