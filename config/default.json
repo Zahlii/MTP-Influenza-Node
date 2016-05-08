@@ -7,6 +7,7 @@
     "log_level": "info",
 
     "MySQL": {
+        "connectionLimit" : 10,
         "host": "myworkbook.de",
         "user": "c4nenns",
         "password": "NasE08ZW6d",
