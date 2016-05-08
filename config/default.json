@@ -1,0 +1,15 @@
+{
+    "Server": {
+        "name": "MTP",
+        "port": "8080"
+    },
+
+    "log_level": "info",
+
+    "MySQL": {
+        "host": "myworkbook.de",
+        "user": "c4nenns",
+        "password": "NasE08ZW6d",
+        "database": "c4nenns"
+    }
+}
