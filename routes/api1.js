@@ -8,7 +8,11 @@ module.exports = (server) => {
             .displayHeatmapData(req.params.lat,req.params.lng,new Date(),res)
         return next();
     });
-
+    api1router.get('/history/:date/:lat/:lng', (req, res, next) => {
+        require('../controllers/heatmap')
+            .displayHeatmapData(req.params.lat,req.params.lng,new Date(req.params.date),res)
+        return next();
+    });
 
 
     api1router.applyRoutes(server, '/api1');

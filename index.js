@@ -8,13 +8,22 @@ const config  = require('config');
 const log = bunyan.createLogger({
     name        : 'logger',
     level       : config.get('log_level'),
-    stream      : process.stdout,
+    streams: [
+        {
+            stream: process.stdout,
+            level: 'debug'
+        },
+        {
+            path: 'restify.log',
+            level: 'trace'
+        }
+    ],
     serializers : bunyan.stdSerializers
 });
 
 const server = restify.createServer({
     name : config.get('Server.name')|| 'MTP',
-    log  : log,
+    log  : log
 });
 
 
