@@ -1,11 +1,14 @@
 'use strict';
 const restify = require('restify');
-const model = require('../model/setHealthstateAndLocation')
+const Ajv = require('ajv');
+const model = require('../model/setHealthstateAndLocation');
 
 module.exports.reportHealthState = (req, res, next) => {
-    if (!req.body){
-        //TODO @swagner-de ordentliches parsen des JSONs und entsprechenden Fehler zurückgeben
-        res.send(new restify.BadRequestError('JSON not as expected'))
+    const ajv = Ajv();
+    const validate = ajv.compile(model.getJsonSchema());
+    const valid = validate(req.body);
+    if (!valid){
+        res.send(400, validate.errors);
         return next()
     }
     else{
