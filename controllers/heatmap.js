@@ -1,5 +1,8 @@
 'use strict';
-module.exports.displayHeatmapData = (lat, lng, ts, res) => {
+const model = require('../model/getHealthReportsAroundLocationAtDate')
+
+
+    module.exports.displayHeatmapData = (lat, lng, ts, res) => {
     if (lat > 90 || lat < -90) {
         res.send(400, {
                 status: "Error",
@@ -13,8 +16,7 @@ module.exports.displayHeatmapData = (lat, lng, ts, res) => {
             }
         );
     } else {
-        require('../model/db').
-            getHealthReportsAroundLocationAtDate(lat, lng, ts ? ts : new Date(), (err, rows, fields) => {
+            model.getHealthReportsAroundLocationAtDate(lat, lng, ts ? ts : new Date(), (err, rows, fields) => {
             if (err) {
                 res.send(400, {
                     status: "Error",
