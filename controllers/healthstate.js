@@ -4,7 +4,8 @@ const restify = require('restify');
 module.exports.reportHealthState = (req, res, next) => {
     if (!req.body){
         //TODO @swagner-de ordentliches parsen des JSONs und entsprechenden Fehler zurückgeben
-        return next(new restify.BadRequestError('JSON not as expected'))
+        res.send(new restify.BadRequestError('JSON not as expected'))
+        return next()
     }
     else{
         require('../model/db').setHealthStateAndLocation(req.body.userid, req.body.lat, req.body.lng, req.body.is_sick, req.body.is_newly_infected,
@@ -16,7 +17,7 @@ module.exports.reportHealthState = (req, res, next) => {
                 }
                 else{
                     res.send(201);
-                    next();
+                    return next();
                 }
             }
         )
