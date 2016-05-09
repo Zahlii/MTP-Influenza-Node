@@ -28,5 +28,5 @@ module.exports.displayHeatmapData = (lat, lng, ts, res) => {
             }
         });
     }
-}
+};
 

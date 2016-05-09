@@ -8,4 +8,4 @@ module.exports.getPool = () => {
             pool = mysql.createPool(config.get('MySQL'))
         }
         return pool
-    }
+    };
