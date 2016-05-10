@@ -27,7 +27,6 @@ const server = restify.createServer({
 });
 
 
-
 server.use(restify.bodyParser({ mapParams: false }));
 server.use(restify.queryParser());
 server.use((req, res, next) => {
@@ -44,6 +43,6 @@ server.on('after', restify.auditLogger({ log: log }));
 routes(server);
 
 log.info('Server started.');
-server.listen(config.get('Server.port'), function () {
+server.listen((process.env.PORT ||config.get('Server.port')), function () {
     log.info('%s listening at %s', server.name, server.url);
 });
