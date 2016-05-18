@@ -3,14 +3,19 @@
         "name": "MTP",
         "port": "8080"
     },
-
     "log_level": "info",
-
-    "MySQL": {
-        "connectionLimit" : 2,
+    "MySQL_Azure": {
+        "connectionLimit": 2,
         "host": "eu-cdbr-azure-north-e.cloudapp.net",
         "user": "bb61f2111a5fdc",
         "password": "00ae80c4",
         "database": "influenza-rdbms"
+    },
+    "MySQL": {
+        "connectionLimit": 10,
+        "host": "myworkbook.de",
+        "user": "c4nenns",
+        "password": "NasE08ZW6d",
+        "database": "c4nenns"
     }
 }
