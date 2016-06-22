@@ -9,7 +9,10 @@ MongoClient.connect(url, function (err, db) {
         console.log('Error connecting to MongoDB: ' + err.message);
     } else {
         console.log('Connected successfully to MongoDB');
+        var test = db.collection('test');
+        test.find({},{},function(e,docs){
+            console.log(docs);
+        });
     }
-    db.version();
     db.close();
 });
