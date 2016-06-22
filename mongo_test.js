@@ -10,7 +10,7 @@ MongoClient.connect(url, function (err, db) {
     } else {
         console.log('Connected successfully to MongoDB');
         var test = db.collection('test');
-        test.find({},{},function(e,docs){
+        test.find().toArray(function(e,docs){
             console.log(docs);
         });
     }
