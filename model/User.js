@@ -43,4 +43,12 @@ schema.statics.getUserByToken = function(token, cb) {
     return this.find({ passwordHash: token }, cb);
 };
 
+schema.methods.getLastHealthReport = function(cb) {
+    return model('HealthReport')
+        .find(
+            {_user:this._id, validTo: null}
+            ,cb
+        );
+};
+
 module.exports.Schema = schema;
