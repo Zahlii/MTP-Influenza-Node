@@ -20,13 +20,12 @@
   },
   "homepage": "https://github.com/Zahlii/MTP-Influenza-Node#readme",
   "dependencies": {
-    "ajv": "^4.0.5",
     "body-parser": "^1.15.0",
     "bunyan": "^1.8.1",
     "compression": "^1.6.1",
     "config": "^1.20.1",
     "fs": "0.0.2",
-    "mongodb": "^2.1.18",
+    "mongoose": "^4.5.3",
     "mysql": "^2.10.2",
     "restify": "^4.0.4",
     "restify-router": "^0.2.1"

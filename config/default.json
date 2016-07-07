@@ -17,5 +17,16 @@
         "user": "c4nenns",
         "password": "NasE08ZW6d",
         "database": "c4nenns"
+    },
+    "MongoDB": {
+        "host": "mongodb://wifo1-30.bwl.uni-mannheim.de:27016/mtp-influenza",
+        "options": {
+            "server": {
+                "auto_reconnect": true,
+                "poolSize": 40
+            },
+            "user": "mtp-influenza",
+            "pass": "JonSnowIsAlive"
+        }
     }
 }

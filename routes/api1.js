@@ -10,14 +10,20 @@ module.exports = (server) => {
     });
 
     api1router.put('/healthstate', (req, res, next) => {
-        require('../controllers/healthstate')
-            .reportHealthState(req, res, next);
+        require('../controllers/HealthReportController')
+            .createHealthReport(req, res, next);
         return next();
     });
 
     api1router.get('/heatmap/history/:date/:lat/:lng', (req, res, next) => {
         require('../controllers/heatmap')
-            .displayHeatmapData(req.params.lat,req.params.lng,new Date(req.params.date),res)
+            .displayHeatmapData(req.params.lat,req.params.lng,new Date(req.params.date),res);
+        return next();
+    });
+
+    api1router.put('/user/create', (req, res, next) => {
+        require('../controllers/UserController')
+            .createUser(req, res, next)
         return next();
     });
 

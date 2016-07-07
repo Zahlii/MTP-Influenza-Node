@@ -4,6 +4,7 @@ const restify = require('restify');
 const bunyan  = require('bunyan');
 const routes  = require('./routes/');
 const config  = require('config');
+const monogooseInitiator = require('./model/index.js')
 
 const log = bunyan.createLogger({
     name        : 'logger',
@@ -39,8 +40,11 @@ server.pre(restify.pre.sanitizePath());
 
 
 server.on('after', restify.auditLogger({ log: log }));
+//server.on('uncaughtException', restify.auditLogger({ log: log }));
 
 routes(server);
+monogooseInitiator.initMongoose();
+
 
 log.info('Server started.');
 server.listen((process.env.PORT ||config.get('Server.port')), function () {
