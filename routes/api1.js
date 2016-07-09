@@ -16,8 +16,8 @@ module.exports = (server) => {
     });
 
     api1router.get('/heatmap/history/:date/:lat/:lng', (req, res, next) => {
-        require('../controllers/heatmap')
-            .displayHeatmapData(req.params.lat,req.params.lng,new Date(req.params.date),res);
+        require('../controllers/HealthReportController')
+            .getLastHealthReport(req, res, next);
         return next();
     });
 
@@ -26,6 +26,12 @@ module.exports = (server) => {
             .createUser(req, res, next)
         return next();
     });
+
+    api1router.put('/location/report', (req, res, next) => {
+        require('../controllers/LocationController')
+            .reportLocation(req, res, next)
+        return next();
+    })
 
 
     api1router.applyRoutes(server, '/api1');

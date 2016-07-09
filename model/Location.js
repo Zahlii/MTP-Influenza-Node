@@ -31,7 +31,7 @@ const schema = new Schema({
     }
 });
 
-schema.index({ geo : '2dsphere' });
+schema.index({ location : '2dsphere' });
 
 schema.statics.getLocationsByProximityAndDate = function(lat, lng, date, cb) {
     //TODO geosphere points in das document einbauen
