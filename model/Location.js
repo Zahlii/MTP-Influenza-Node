@@ -7,17 +7,12 @@ const Schema = mongoose.Schema;
 
 
 const schema = new Schema({
-    lat: {
-        type: Number,
-        min:-90,
-        max:90,
-        required: true
-    },
-    lng: {
-        type: Number,
-        required: true,
-        min:-180,
-        max:180
+    location: {
+        type: {
+            type: String,
+            default: 'Point'
+        },
+        coordinates: [Number]
     },
     timestamp: {
         type: Date,
@@ -36,4 +31,11 @@ const schema = new Schema({
     }
 });
 
-module.exports.Schema = schema
+schema.index({ geo : '2dsphere' });
+
+schema.statics.getLocationsByProximityAndDate = function(lat, lng, date, cb) {
+    //TODO geosphere points in das document einbauen
+    //see http://stackoverflow.com/questions/25734092/query-locations-within-a-radius
+};
+
+module.exports.Schema = schema;
