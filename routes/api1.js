@@ -31,6 +31,12 @@ module.exports = (server) => {
         require('../controllers/LocationController')
             .reportLocation(req, res, next)
         return next();
+    });
+
+    api1router.get('/location/get', (req, res, next) => {
+        require('../controllers/LocationController')
+            .getLocationsByProximityAndDate(req, res, next)
+        return next();
     })
 
 
