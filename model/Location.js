@@ -27,6 +27,12 @@ const schema = new Schema({
         type: Boolean,
         required: true
     },
+    healthScore: {
+        type: Number,
+        min: 0,
+        max: 100,
+        required:true
+    },
     _healthReport: {
         type: Schema.Types.ObjectId,
         required: true,

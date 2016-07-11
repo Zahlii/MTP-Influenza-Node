@@ -19,7 +19,8 @@ const schema = new Schema({
     healthScore: {
         type: Number,
         min: 0,
-        max: 100
+        max: 100,
+        required:true
     },
     issuedOn: {
         type: Date,
@@ -70,7 +71,7 @@ const schema = new Schema({
 });
 
 schema.methods.getPrevious = function(cb) {
-    return this.model('HealthReport').find({_user : this._user, validTo : null},cb);
+    return this.model('HealthReport').getLastFromUser(this._user,cb);
 };
 
 schema.methods.devalidatePrevious = function(cb) {
@@ -80,6 +81,10 @@ schema.methods.devalidatePrevious = function(cb) {
         {multi: true},
         cb
     );
+};
+
+schema.statics.getLastFromUser = function(_user,cb) {
+    return this.model('HealthReport').find({_user : _user, validTo : null},cb);
 };
 
 

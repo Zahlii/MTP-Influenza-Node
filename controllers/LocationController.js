@@ -4,23 +4,36 @@
 'use strict';
 const mongoose = require('mongoose');
 const Location = mongoose.model('Location');
+const HealthReport = mongoose.model('HealthReport');
 
 
 module.exports.reportLocation = (req, res, next) => {
-    const bdy = req.body
+    const bdy = req.body;
     if (bdy.timestamp) {
         delete bdy.timestamp
     }
     bdy.geo = {
         coordinates: [bdy.lng, bdy.lat]
     };
-    delete bdy.lng, bdy.lat
+    delete bdy.lng;
+    delete bdy.lat;
     const location = new Location(bdy);
-    location.save((err) => {
-        if (err) res.send(500, err)
-        else res.send(201);
-        return next()
-    })
+
+    HealthReport.getLastFromUser(bdy._user, (err, doc) => {
+        if (err) {
+            res.send(500, err);
+        } else if (doc === null) {
+            res.send(500, new Error('Unknown user ' + bdy._user+' or trying to send location without valid HealthState'));
+        } else {
+            location._healthReport = doc._id;
+            location.healthScore = doc.healthScore;
+            location.save((err) => {
+                if (err) res.send(500, err);
+                else res.send(201);
+                return next()
+            })
+        }
+    });
 };
 
 module.exports.getLocationsByProximityAndDate = (req, res, next) => {

@@ -28,5 +28,8 @@
             "user": "mtp-influenza",
             "pass": "JonSnowIsAlive"
         }
+    },
+    "calc": {
+        "infectionHealthScoreThreshold":40
     }
 }
