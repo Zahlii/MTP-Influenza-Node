@@ -29,7 +29,7 @@ module.exports = (server) => {
 
     api1router.put('/location/report', (req, res, next) => {
         require('../controllers/LocationController')
-            .reportLocation(req, res, next)
+            .reportLocation(req, res, next, false)
         return next();
     });
 
@@ -37,7 +37,7 @@ module.exports = (server) => {
         require('../controllers/LocationController')
             .getLocationsByProximityAndDate(req, res, next)
         return next();
-    })
+    });
 
 
     api1router.applyRoutes(server, '/api1');

@@ -16,7 +16,7 @@ module.exports.createHealthReport = (req, res, next) => {
     }
 
     const hr = new HealthReport(bdy);
-    
+
     User.findById(bdy._user, (err, doc) => {
         if (err) {
             res.send(500, err);
@@ -48,7 +48,7 @@ module.exports.createHealthReport = (req, res, next) => {
                             return next()
                         }
                         else {
-                            require('./LocationController').reportLocation(req,res,next);
+                            require('./LocationController').reportLocation(req,res,next,true);
                         }
                     });
                     return next()
@@ -72,7 +72,7 @@ module.exports.createHealthReport = (req, res, next) => {
                                     return next()
                                 }
                                 else {
-                                    require('./LocationController').reportLocation(req,res,next);
+                                    require('./LocationController').reportLocation(req,res,next,true);
                                 }
                             });
                         }

@@ -7,7 +7,7 @@ const Location = mongoose.model('Location');
 const HealthReport = mongoose.model('HealthReport');
 
 
-module.exports.reportLocation = (req, res, next) => {
+module.exports.reportLocation = (req, res, next, isNew) => {
     const bdy = req.body;
     if (bdy.timestamp) {
         delete bdy.timestamp
@@ -32,7 +32,7 @@ module.exports.reportLocation = (req, res, next) => {
             doc = doc[0];
             location._healthReport = doc._id;
             location.healthScore = doc.healthScore;
-            location.isNewlyInfected = doc.isNewlyInfected;
+            location.isNewlyInfected = isNew;
 
             location.save((err) => {
                 if (err) res.send(500, err);
