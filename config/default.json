@@ -19,7 +19,7 @@
         "database": "c4nenns"
     },
     "MongoDB": {
-        "host": "mongodb://127.0.0.1:27016/mtp-influenza",
+        "host": "mongodb://wifo1-30.bwl.uni-mannheim.de:27016/mtp-influenza",
         "options": {
             "server": {
                 "auto_reconnect": true,
