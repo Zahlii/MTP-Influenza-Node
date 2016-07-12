@@ -35,3 +35,4 @@ node_modules/
 *.iml
 
 restify.log
+nohup.out

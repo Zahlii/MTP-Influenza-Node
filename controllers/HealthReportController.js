@@ -16,7 +16,7 @@ module.exports.createHealthReport = (req, res, next) => {
     }
 
     const hr = new HealthReport(bdy);
-    console.log(hr);
+    
     User.findById(bdy._user, (err, doc) => {
         if (err) {
             res.send(500, err);
