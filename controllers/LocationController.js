@@ -17,21 +17,26 @@ module.exports.reportLocation = (req, res, next) => {
     };
     delete bdy.lng;
     delete bdy.lat;
+
+
     const location = new Location(bdy);
 
     HealthReport.getLastFromUser(bdy._user, (err, doc) => {
         if (err) {
             res.send(500, err);
             return next()
-        } else if (doc === null) {
+        } else if (doc == null || doc.length == 0) {
             res.send(500, new Error('Unknown user ' + bdy._user+' or trying to send location without valid HealthState'));
             return next()
         } else {
+            doc = doc[0];
             location._healthReport = doc._id;
             location.healthScore = doc.healthScore;
+            location.isNewlyInfected = doc.isNewlyInfected;
+
             location.save((err) => {
                 if (err) res.send(500, err);
-                else res.send(201);
+                else res.send(201, location);
                 return next()
             })
         }

@@ -13,6 +13,8 @@ module.exports.initMongoose = () => {
             if (file.substr(-3, 3) === '.js' && file !== 'index.js') {
                 const classname = file.replace('.js', '')
                 const schema = require('./' + classname).Schema;
+                if(!schema)
+                    return;
                 mongoose.model(classname, schema);
             }
 

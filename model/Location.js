@@ -43,11 +43,21 @@ const schema = new Schema({
 schema.index({'geo': '2dsphere'})
 
 schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, date, params, cb) {
+    var ts = date.getTime(),
+        ts = ts - ts % 86400 * 1000,
+        dateStart = new Date(ts),
+        dateEnd = new Date(ts + 86400 * 1000);
+
+
     return this.model('Location').find(
         {
             'geo': {
-                $nearSphere: [lat, lng],
+                $nearSphere: [lng, lat],
                 $maxDistance: proximity
+            },
+            'timestamp': {
+                $gte: dateStart,
+                $lte: dateEnd
             }
         },
         params,

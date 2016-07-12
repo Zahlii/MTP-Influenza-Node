@@ -2,11 +2,12 @@
 const mongoose = require('mongoose');
 const HealthReport = mongoose.model('HealthReport');
 const User = mongoose.model('User');
-const helpers = require('./helpers');
+const helpers = require('../model/helpers');
 const config = require('config');
 
 module.exports.createHealthReport = (req, res, next) => {
     const bdy = req.body;
+
     if (bdy.issuedOn) {
         delete bdy.issuedOn
     }
@@ -15,7 +16,7 @@ module.exports.createHealthReport = (req, res, next) => {
     }
 
     const hr = new HealthReport(bdy);
-
+    console.log(hr);
     User.findById(bdy._user, (err, doc) => {
         if (err) {
             res.send(500, err);
@@ -38,10 +39,21 @@ module.exports.createHealthReport = (req, res, next) => {
                     res.send(500, err);
                     return next()
                 }
-                else if (prev === null) {
+                else if (prev == null || prev.length == 0) {
                     // no old health report, so this one is an infection only if it exceeds the threshold
                     hr.isNewlyInfected = isSick;
+                    hr.save((err) => {
+                        if (err) {
+                            res.send(500, err);
+                            return next()
+                        }
+                        else {
+                            require('./LocationController').reportLocation(req,res,next);
+                        }
+                    });
+                    return next()
                 } else {
+                    prev = prev[0];
                     // old health report, only count new infection if last one wasn't already sick
                     hr.isNewlyInfected = !prev.isNewlyInfected && (prev.healthScore < config.calc.infectionHealthScoreThreshold) && isSick ;
 
@@ -53,6 +65,7 @@ module.exports.createHealthReport = (req, res, next) => {
                             return next()
                         }
                         else {
+
                             hr.save((err) => {
                                 if (err) {
                                     res.send(500, err);

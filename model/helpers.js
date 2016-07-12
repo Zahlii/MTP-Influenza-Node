@@ -27,6 +27,7 @@ module.exports = {
             sumW = 0;
         for(var p in w) {
             if(w.hasOwnProperty(p)) {
+                data[p] = data[p] === 'true';
                 var c = w[p];
                 sumW += c;
                 sum += data[p] ? c : 0;

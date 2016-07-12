@@ -22,6 +22,10 @@ const schema = new Schema({
         max: 100,
         required:true
     },
+    isNewlyInfected: {
+        type: Boolean,
+        required: true
+    },
     issuedOn: {
         type: Date,
         default: Date.now,
