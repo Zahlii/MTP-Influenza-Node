@@ -19,8 +19,10 @@ module.exports.createHealthReport = (req, res, next) => {
     User.findById(bdy._user, (err, doc) => {
         if (err) {
             res.send(500, err);
+            return next()
         } else if (doc === null) {
             res.send(500, new Error('Unknown user ' + bdy._user));
+            return next()
         } else {
             var now = new Date();
 
@@ -32,7 +34,10 @@ module.exports.createHealthReport = (req, res, next) => {
             hr.getPrevious((err, prev) => {
                 var isSick = (hr.healthScore >= config.calc.infectionHealthScoreThreshold);
 
-                if (err) res.send(500, err);
+                if (err) {
+                    res.send(500, err);
+                    return next()
+                }
                 else if (prev === null) {
                     // no old health report, so this one is an infection only if it exceeds the threshold
                     hr.isNewlyInfected = isSick;
@@ -43,18 +48,27 @@ module.exports.createHealthReport = (req, res, next) => {
                     prev.validTo = now;
 
                     prev.save((err)=> {
-                        if (err) res.send(500, err);
+                        if (err) {
+                            res.send(500, err);
+                            return next()
+                        }
                         else {
                             hr.save((err) => {
-                                if (err) res.send(500, err);
-                                else res.send(201);
+                                if (err) {
+                                    res.send(500, err);
+                                    return next()
+                                }
+                                else {
+                                    require('./LocationController').reportLocation(req,res,next);
+                                }
                             });
                         }
                     });
                 }
-                return next()
-            });
 
+            });
         }
     });
+
+
 };

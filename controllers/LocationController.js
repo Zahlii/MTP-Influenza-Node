@@ -22,8 +22,10 @@ module.exports.reportLocation = (req, res, next) => {
     HealthReport.getLastFromUser(bdy._user, (err, doc) => {
         if (err) {
             res.send(500, err);
+            return next()
         } else if (doc === null) {
             res.send(500, new Error('Unknown user ' + bdy._user+' or trying to send location without valid HealthState'));
+            return next()
         } else {
             location._healthReport = doc._id;
             location.healthScore = doc.healthScore;
