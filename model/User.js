@@ -19,7 +19,7 @@ const schema = new Schema({
         max: Date.now,
         min: new Date('1896-06-30')
     },
-    passwordHash: {
+    fbUserId: {
         type: String,
         required: true
     },
@@ -38,9 +38,8 @@ const schema = new Schema({
     }
 });
 
-
-schema.statics.getUserByToken = function(token, cb) {
-    return this.find({ passwordHash: token }, cb);
+schema.statics.getUserByFbId = function(fbId, cb) {
+    return this.find({ fbUserId: fbId }, cb);
 };
 
 schema.methods.getLastHealthReport = function(cb) {

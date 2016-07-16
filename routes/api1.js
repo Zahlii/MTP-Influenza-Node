@@ -21,9 +21,9 @@ module.exports = (server) => {
         return next();
     });
 
-    api1router.put('/user/create', (req, res, next) => {
+    api1router.put('/user/auth', (req, res, next) => {
         require('../controllers/UserController')
-            .createUser(req, res, next)
+            .authUser(req, res, next)
         return next();
     });
 
