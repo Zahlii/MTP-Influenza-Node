@@ -37,21 +37,17 @@ const schema = new Schema({
         enum: ['m', 'f']
     },
     deviceTokens: {
-        type: [String],
-        required: true,
-        default: []
+        type: [String]
     },
     settings: {
         warnRadius: {
             type: Number,
             min: 5,
-            required: true,
             default: 60
         },
         updateFrequency: {
             type: Number,
             min: 5,
-            required: true,
             default: 60
         }
     }
