@@ -5,6 +5,7 @@ const bunyan  = require('bunyan');
 const routes  = require('./routes/');
 const config  = require('config');
 const monogooseInitiator = require('./model/index.js')
+const fs = require('fs');
 
 const log = bunyan.createLogger({
     name        : 'logger',
