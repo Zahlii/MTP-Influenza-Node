@@ -70,11 +70,11 @@ schema.methods.sendPushNotification = function(data,cb) {
     var completed = 0;
     var todo = this.deviceTokens.length;
     if(todo==0) {
-        cb();
+        cb(null);
     } else {
         for (var i = 0; i < todo; i++) {
-            pushAgent.sendPushNotification(this.deviceTokens[i], data, () => {
-                if (++completed >= todo) cb();
+            pushAgent.sendPushNotification(this.deviceTokens[i], data, (err) => {
+                if (++completed >= todo) cb(err);
             })
         }
     }

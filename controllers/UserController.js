@@ -86,8 +86,14 @@ module.exports.sendPushNotification = (req,res,next) => {
         } else {
             doc.sendPushNotification({
                 message: 'Test Notification'
+            },(err)=> {
+                if (err) {
+                    res.send(500, err);
+                } else {
+                    res.send(200);
+                }
+                return next();
             });
-            return next();
         }
     });
 };
