@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const pushAgent = require('push');
 
 const schema = new Schema({
     mail: {
@@ -63,6 +64,20 @@ schema.methods.getLastHealthReport = function(cb) {
             {_user:this._id, validTo: null}
             ,cb
         );
+};
+
+schema.methods.sendPushNotification = function(data,cb) {
+    var completed = 0;
+    var todo = this.deviceTokens.length;
+    if(todo==0) {
+        cb();
+    } else {
+        for (var i = 0; i < todo; i++) {
+            pushAgent.sendPushNotification(this.deviceTokens[i], data, () => {
+                if (++completed >= todo) cb();
+            })
+        }
+    }
 };
 
 module.exports.Schema = schema;

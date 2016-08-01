@@ -11,6 +11,10 @@ module.exports.authUser = (req, res, next) => {
         res.send(500, new Error('No auth token supported'));
         return next();
     }
+    if(!bdy.deviceToken) {
+        res.send(500, new Error('No device token supported'));
+        return next();
+    }
 
     fb.setAccessToken(bdy.fbAuthToken);
 
@@ -35,6 +39,7 @@ module.exports.authUser = (req, res, next) => {
 
                 if(doc.length == 0) {
                     const u = new User(bdy);
+                    u.deviceTokens.push(bdy.deviceToken);
                     u.save((err) => {
                         if (err) {res.send(500, err)}
                         else {
@@ -44,7 +49,18 @@ module.exports.authUser = (req, res, next) => {
                     });
                 } else {
                     var u = doc[0];
-                    res.send(201,u);
+                    if(!u.deviceTokens.contains(bdy.deviceTokens)) {
+                        u.deviceTokens.push(bdy.deviceToken);
+                        u.save((err) => {
+                            if (err) {res.send(500, err)}
+                            else {
+                                res.send(201,u);
+                            }
+                            return next()
+                        });
+                    } else {
+                        res.send(201, u);
+                    }
                 }
             });
 
@@ -52,6 +68,22 @@ module.exports.authUser = (req, res, next) => {
         }
 
     });
+};
 
-
+module.exports.sendPushNotification = (req,res,next) => {
+    const bdy = req.body;
+    User.findById(bdy._user, (err, doc) => {
+        if (err) {
+            res.send(500, err);
+            return next();
+        } else if (doc == null) {
+            res.send(500, new Error('Unknown user ' + bdy._user+'.'));
+            return next();
+        } else {
+            doc.sendPushNotification({
+                message: 'Test Notification'
+            });
+            return next();
+        }
+    });
 };
