@@ -49,8 +49,12 @@ module.exports.authUser = (req, res, next) => {
                     });
                 } else {
                     var u = doc[0];
-                    if(!u.deviceTokens.contains(bdy.deviceTokens)) {
+
+
+
+                    if(u.deviceTokens.indexOf(bdy.deviceToken) === -1) {
                         u.deviceTokens.push(bdy.deviceToken);
+
                         u.save((err) => {
                             if (err) {res.send(500, err)}
                             else {

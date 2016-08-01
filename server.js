@@ -26,8 +26,8 @@ const log = bunyan.createLogger({
 const server = restify.createServer({
     name : config.get('Server.name')|| 'MTP',
     log  : log,
-    certificate: fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/privkey.pem')
+    //certificate: fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/fullchain.pem'),
+    //key: fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/privkey.pem')
 });
 
 
