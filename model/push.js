@@ -4,9 +4,12 @@ const join = require('path').join
 const pfx = join(__dirname, '../config/pfx.p12');
 const apnagent = require('apnagent');
 const agent = new apnagent.Agent();
+console.log('DIRNAME IS:'+__dirname);
+console.log('PFX FILE IS:'+pfx);
 agent.set('pfx file', pfx);
 agent.enable('sandbox');
-agent.connect(function (err) {
+
+/*agent.connect(function (err) {
 
     if (err & err.name === 'GatewayAuthorizationError') {
         console.log('Authentication Error: %s', err.message);
@@ -20,7 +23,7 @@ agent.connect(function (err) {
         : 'production';
 
     console.log('apnagent [%s] gateway connected', env);
-});
+});*/
 agent.on('message:error', function (err, msg) {
     switch (err.name) {
         // This error occurs when Apple reports an issue parsing the message.
