@@ -33,13 +33,13 @@ module.exports = (server) => {
         return next();
     });
 
-    api1router.get('/location/get', (req, res, next) => {
+    api1router.put('/location/get', (req, res, next) => {
         require('../controllers/LocationController')
             .getLocationsByProximityAndDate(req, res, next)
         return next();
     });
 
-    api1router.get('/push', (req, res, next) => {
+    api1router.put('/push', (req, res, next) => {
         require('../controllers/UserController')
             .sendPushNotification(req, res, next)
         return next();
