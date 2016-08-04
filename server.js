@@ -4,7 +4,7 @@ const restify = require('restify');
 const bunyan  = require('bunyan');
 const routes  = require('./routes/');
 const config  = require('config');
-const monogooseInitiator = require('./model/index.js')
+const monogooseInitiator = require('./model/index.js');
 const fs = require('fs');
 
 const log = bunyan.createLogger({
@@ -26,8 +26,8 @@ const log = bunyan.createLogger({
 const server = restify.createServer({
     name : config.get('Server.name')|| 'MTP',
     log  : log,
-    //certificate: fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/fullchain.pem'),
-    //key: fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/privkey.pem')
+    certificate: fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/privkey.pem')
 });
 
 

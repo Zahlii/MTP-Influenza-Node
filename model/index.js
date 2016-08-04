@@ -11,7 +11,7 @@ module.exports.initMongoose = () => {
         mongoose.connect(mongoconfig.host, mongoconfig.options);
         fs.readdirSync('./model').forEach((file) => {
             if (file.substr(-3, 3) === '.js' && file !== 'index.js') {
-                const classname = file.replace('.js', '')
+                const classname = file.replace('.js', '');
                 const schema = require('./' + classname).Schema;
                 if(!schema)
                     return;

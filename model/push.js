@@ -4,8 +4,7 @@ const join = require('path').join
 const pfx = join(__dirname, '../config/pfx.p12');
 const apnagent = require('apnagent');
 const agent = new apnagent.Agent();
-console.log('DIRNAME IS:'+__dirname);
-console.log('PFX FILE IS:'+pfx);
+
 agent.set('pfx file', pfx);
 agent.enable('sandbox');
 
