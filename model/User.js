@@ -42,13 +42,11 @@ const schema = new Schema({
     },
     lastPushNotification: {
         type: Date,
-        required: true,
         default: null,
         max: Date.now
     },
     lastHealthReport: {
         type: Date,
-        required: true,
         default: null,
         max: Date.now
     },

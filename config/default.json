@@ -30,6 +30,7 @@
         }
     },
     "calc": {
-        "infectionHealthScoreThreshold":40
+        "infectionHealthScoreThreshold":40,
+        "sendNotificationOnHealthReportAge":86400
     }
 }
