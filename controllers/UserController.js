@@ -40,6 +40,8 @@ module.exports.authUser = (req, res, next) => {
                 if(doc.length == 0) {
                     const u = new User(bdy);
                     u.deviceTokens.push(bdy.deviceToken);
+                    u.lastHealthReport = null;
+                    u.lastPushNotification = null;
                     u.save((err) => {
                         if (err) {res.send(500, err)}
                         else {
