@@ -12,7 +12,11 @@ const HealthReport = mongoose.model('HealthReport');
 
 module.exports = function(input, done) {
     scheduleEvery(5,function() {
-        HealthReport.find({validTo:null},(err,result) => {
+        User.find({
+            lastHealthReport: {
+                $lt: Date.now() - 86400 * 1000
+            }
+        },(err,result) => {
             console.log(result);
         });
     });

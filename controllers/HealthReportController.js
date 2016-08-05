@@ -32,6 +32,9 @@ module.exports.createHealthReport = (req, res, next) => {
             hr.age = helpers.calculateAge(doc.birthDate);
             hr.healthScore = helpers.calculateHealthScore(bdy);
 
+            doc.lastHealthReport = now;
+            doc.save();
+
             hr.getPrevious((err, prev) => {
                 var isSick = (hr.healthScore >= config.calc.infectionHealthScoreThreshold);
 

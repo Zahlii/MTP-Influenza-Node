@@ -40,6 +40,18 @@ const schema = new Schema({
     deviceTokens: {
         type: [String]
     },
+    lastPushNotification: {
+        type: Date,
+        required: true,
+        default: null,
+        max: Date.now
+    },
+    lastHealthReport: {
+        type: Date,
+        required: true,
+        default: null,
+        max: Date.now
+    },
     settings: {
         warnRadius: {
             type: Number,
@@ -69,6 +81,8 @@ schema.methods.getLastHealthReport = function(cb) {
 schema.methods.sendPushNotification = function(data,cb) {
     var completed = 0;
     var todo = this.deviceTokens.length;
+    this.lastPushNotification = Date.now();
+    this.save();
     if(todo==0) {
         cb(null);
     } else {
