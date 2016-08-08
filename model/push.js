@@ -1,16 +1,18 @@
 'use strict';
 
-const join = require('path').join
-const pfx = join(__dirname, '../config/pfx.p12');
+const join = require('path').join;
+const pfx = join(__dirname, '../config/influenza_push_service.p12');
 const apnagent = require('apnagent');
 const agent = new apnagent.Agent();
+const config = require('config');
 
 agent.set('pfx file', pfx);
+agent.set('passphrase',config.APN.passphrase);
 agent.enable('sandbox');
 
-/*agent.connect(function (err) {
+agent.connect(function (err) {
 
-    if (err & err.name === 'GatewayAuthorizationError') {
+    if (err && err.name === 'GatewayAuthorizationError') {
         console.log('Authentication Error: %s', err.message);
     } else if (err) {
         throw err;
@@ -22,8 +24,10 @@ agent.enable('sandbox');
         : 'production';
 
     console.log('apnagent [%s] gateway connected', env);
-});*/
+});
+
 agent.on('message:error', function (err, msg) {
+
     switch (err.name) {
         // This error occurs when Apple reports an issue parsing the message.
         case 'GatewayNotificationError':
@@ -54,6 +58,9 @@ agent.on('message:error', function (err, msg) {
 
 module.exports.apnAgent = agent;
 module.exports.sendPushNotification = (device,data,cb) => {
+
+    console.log('Using token: '+device);
+
     var msg = agent.createMessage()
         .device(device)
         .alert(data.message);

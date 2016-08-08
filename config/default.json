@@ -29,6 +29,9 @@
             "pass": "JonSnowIsAlive"
         }
     },
+    "APN": {
+        "passphrase":"influenza2016"
+    },
     "calc": {
         "infectionHealthScoreThreshold":40,
         "sendNotificationOnHealthReportAge":86400

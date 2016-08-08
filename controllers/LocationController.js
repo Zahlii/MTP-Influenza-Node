@@ -45,8 +45,9 @@ module.exports.reportLocation = (req, res, next, isNew) => {
 
 module.exports.getLocationsByProximityAndDate = (req, res, next) => {
     const exclude = '-_id -_healthReport -__v -geo.type';
-    Location.getLocationsByProximityAndDate(req.params.lat, req.params.lng,
-        req.params.proximity, new Date(req.params.date), exclude, (err, locations) => {
+    const bdy = req.body;
+    Location.getLocationsByProximityAndDate(bdy.lat, bdy.lng,
+        bdy.proximity, new Date(bdy.date), exclude, (err, locations) => {
             if (err) res.send(500, err);
             else {
                 // TODO klären ob hier Umformatierung des Geo-Attributes notwendig ist und ggfs vornehmen.
