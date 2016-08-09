@@ -13,7 +13,7 @@ const config  = require('config');
 
 module.exports = function(input, done) {
     scheduleEvery(5,function() {
-        var dt = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
+        const dt = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
 
         User.find({
             $or: [
@@ -24,6 +24,16 @@ module.exports = function(input, done) {
                 },
                 {
                     lastHealthReport: null
+                }
+            ],
+            $or: [
+                {
+                    lastPushNotification: {
+                        $lt: dt
+                    }
+                },
+                {
+                    lastPushNotification: null
                 }
             ]
         },(err,result) => {
