@@ -23,7 +23,19 @@ module.exports = (server) => {
 
     api1router.put('/user/auth', (req, res, next) => {
         require('../controllers/UserController')
+            .authUserByFB(req, res, next)
+        return next();
+    });
+
+    api1router.put('/user/authnormal', (req, res, next) => {
+        require('../controllers/UserController')
             .authUser(req, res, next)
+        return next();
+    });
+
+    api1router.put('/user/register', (req, res, next) => {
+        require('../controllers/UserController')
+            .registerUser(req, res, next)
         return next();
     });
 

@@ -15,6 +15,7 @@ module.exports.createHealthReport = (req, res, next) => {
         delete bdy.validTo
     }
 
+
     const hr = new HealthReport(bdy);
 
     User.findById(bdy._user, (err, doc) => {

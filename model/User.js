@@ -20,9 +20,11 @@ const schema = new Schema({
         max: Date.now,
         min: new Date('1896-06-30')
     },
+    passwordHash: {
+        type: String
+    },
     fbUserId: {
-        type: String,
-        required: true
+        type: String
     },
     firstName: {
         type: String,

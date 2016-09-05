@@ -2,9 +2,86 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const fb = require('fbgraph');
+const bcrypt = require('bcrypt-nodejs');
+
+module.exports.registerUser = (req,res, next) => {
+    const bdy = req.body;
+
+    User.find({mail:bdy.mail},(err,doc) => {
+        if(err) {
+            res.send(500,err);
+            return next();
+        }
+        if(doc.length > 0) {
+            res.send(500, new Error('User already exists'));
+            return next();
+        }
+
+        bdy.birthDate = new Date(bdy.birthDate);
+        bdy.passwordHash = bcrypt.hashSync(bdy.password);
+        bdy.deviceTokens = [];
+
+        delete bdy.password;
 
 
-module.exports.authUser = (req, res, next) => {
+        const newUser = new User(bdy);
+
+        newUser.save((err) => {
+            if(err) {
+                res.send(500,err);
+            } else {
+                res.send(201,newUser);
+            }
+            return next();
+        });
+    });
+
+
+};
+module.exports.authUser = (req,res, next) => {
+    const bdy = req.body;
+
+    if(!bdy.mail) {
+        res.send(500, new Error('No mail supported'));
+        return next();
+    }
+    if(!bdy.deviceToken) {
+        res.send(500, new Error('No device token supported'));
+        return next();
+    }
+
+    User.find({mail:bdy.mail},(err,doc) => {
+        if(err) {
+            res.send(500,err);
+            return next();
+        }
+        if(doc.length == 0) {
+            res.send(500, new Error('User not found'));
+            return next();
+        }
+        const u = doc[0];
+        if(!bcrypt.compareSync(bdy.password,u.passwordHash)) {
+            res.send(500, new Error('Invalid password'));
+            return next();
+        }
+        if(u.deviceTokens.indexOf(bdy.deviceToken) === -1) {
+            u.deviceTokens.push(bdy.deviceToken);
+
+            u.save((err) => {
+                if (err) {res.send(500, err)}
+                else {
+                    res.send(201,u);
+                }
+                return next()
+            });
+        } else {
+            res.send(201, u);
+        }
+
+    });
+};
+
+module.exports.authUserByFB = (req, res, next) => {
     const bdy = req.body;
 
     if(!bdy.fbAuthToken) {

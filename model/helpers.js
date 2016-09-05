@@ -13,6 +13,9 @@ module.exports = {
         return age;
     },
     calculateHealthScore:(data) => {
+		// smiley 1-5 (1 = richtig scheisse, 5 = perfekt)
+		// symptome sind 0/1 (ja nein)
+		// healthscore ist 0 - 100 (gesund bis komplett krank)
         var w = {
             isSick:0.3,
             hasHeadache:0.4,
@@ -22,9 +25,8 @@ module.exports = {
             hasFever:0.6,
             hasCoughing:0.4
         };
-		// smiley 1-5 (1 = richtig scheisse, 5 = perfekt)
-		// symptome sind 0/1 (ja nein)
-		// healthscore ist 0 - 100 (gesund bis komplett krank)
+		
+		// berechnet den healthscore von 0-100 ausgehend nur von den symptomen
         var sum = 0,
             sumW = 0;
         for(var p in w) {
@@ -39,6 +41,7 @@ module.exports = {
 		// healthscore anhand der symptome alleine
         var sympt = (sum/sumW)*100;
 		
+		// berechne den multiplikator ausgehend von den smileys
 		var mult = (1-(data.smileyRating-1)/5); 
 		// smiley = 1 -> mult = 1
 		// smiley = 5 -> mult = 1-4/5 = 0.2
