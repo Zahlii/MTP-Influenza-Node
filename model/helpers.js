@@ -22,7 +22,9 @@ module.exports = {
             hasFever:0.6,
             hasCoughing:0.4
         };
-
+		// smiley 1-5 (1 = richtig scheisse, 5 = perfekt)
+		// symptome sind 0/1 (ja nein)
+		// healthscore ist 0 - 100 (gesund bis komplett krank)
         var sum = 0,
             sumW = 0;
         for(var p in w) {
@@ -34,6 +36,13 @@ module.exports = {
             }
         }
 
-        return (sum/sumW)*100
+		// healthscore anhand der symptome alleine
+        var sympt = (sum/sumW)*100;
+		
+		var mult = (1-(smiley-1)/5); 
+		// smiley = 1 -> mult = 1
+		// smiley = 5 -> mult = 1-4/5 = 0.2
+		return mult*sympt;
+		
     }
 };

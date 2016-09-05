@@ -22,6 +22,12 @@ const schema = new Schema({
         max: 100,
         required:true
     },
+	smileyRating: {
+        type: Number,
+        min: 1,
+        max: 5,
+        required:true
+    },
     isNewlyInfected: {
         type: Boolean,
         required: true
