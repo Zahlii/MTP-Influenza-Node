@@ -39,7 +39,7 @@ module.exports = {
 		// healthscore anhand der symptome alleine
         var sympt = (sum/sumW)*100;
 		
-		var mult = (1-(smiley-1)/5); 
+		var mult = (1-(data.smileyRating-1)/5); 
 		// smiley = 1 -> mult = 1
 		// smiley = 5 -> mult = 1-4/5 = 0.2
 		return mult*sympt;
