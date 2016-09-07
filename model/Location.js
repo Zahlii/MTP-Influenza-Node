@@ -51,11 +51,14 @@ schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, d
 
     return this.model('Location').find(
         {
-            'geo': {
-                $nearSphere: [lng, lat],
-                $maxDistance: proximity
+            geo: {
+                $nearSphere : {
+                    $geometry: { type: "Point",  coordinates: [lng,lat] },
+                    $minDistance: 0,
+                    $maxDistance: proximity
+                }
             },
-            'timestamp': {
+            timestamp: {
                 $gte: dateStart,
                 $lte: dateEnd
             }
