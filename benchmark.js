@@ -1,8 +1,12 @@
 const http = require('request');
+const os = require('os');
+const protocol = os.hostname() == "wifo1-30" ? "https" : "http";
+
+
 const DEL = ';';
 
 function putRequest(url, data,cb) {
-    url = 'http://localhost:8080' + url;
+    url = protocol+'://localhost:8080' + url;
 
     //var t = Date.now();
 
