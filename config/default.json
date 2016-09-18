@@ -34,6 +34,7 @@
     },
     "calc": {
         "infectionHealthScoreThreshold":40,
-        "sendNotificationOnHealthReportAge":86400
+        "sendNotificationOnHealthReportAge":86400,
+        "warningTimeInterval":86400
     }
 }
