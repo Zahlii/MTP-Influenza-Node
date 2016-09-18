@@ -13,10 +13,6 @@ const log = bunyan.createLogger({
     level       : config.get('log_level'),
     streams: [
         {
-            stream: process.stdout,
-            level: 'debug'
-        },
-        {
             path: 'restify.log',
             level: 'trace'
         }
