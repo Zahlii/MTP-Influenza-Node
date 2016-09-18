@@ -16,24 +16,30 @@ module.exports = function(input, done) {
         const dt = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
 
         User.find({
-            $or: [
+            $and: [
                 {
-                    lastHealthReport: {
-                        $lt: dt
-                    }
+                    $or: [
+                        {
+                            lastHealthReport: {
+                                $lt: dt
+                            }
+                        },
+                        {
+                            lastHealthReport: null
+                        }
+                    ]
                 },
                 {
-                    lastHealthReport: null
-                }
-            ],
-            $or: [
-                {
-                    lastPushNotification: {
-                        $lt: dt
-                    }
-                },
-                {
-                    lastPushNotification: null
+                    $or: [
+                        {
+                            lastPushNotification: {
+                                $lt: dt
+                            }
+                        },
+                        {
+                            lastPushNotification: null
+                        }
+                    ]
                 }
             ]
         },(err,result) => {
