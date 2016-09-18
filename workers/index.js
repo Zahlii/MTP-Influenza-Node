@@ -1,15 +1,32 @@
 const fs = require('fs');
 const spawn = require('threads').spawn;
+const log = require('../config/log.js');
 
-module.exports = function(log) {
+module.exports = function() {
     fs.readdirSync('./workers').forEach((file) => {
         if (file.substr(-3, 3) === '.js' && file !== 'index.js') {
+            console.log(file);
             var w = spawn('./workers/' + file).on('message', function(message) {
-                log.info("Worker "+file+" message: " + message);
+                log.captureMessage("Worker "+file+" message: " + message,{
+                    tags:{
+                        App:'NODE_BACKGROUND',
+                        BackgroundFile:file
+                    }
+                });
             }).on('error', function(message) {
-                log.error("Worker "+file+" error",message);
+                log.captureException(new Error("Worker "+file+" error"),{
+                    tags:{
+                        App:'NODE_BACKGROUND',
+                        BackgroundFile:file
+                    }
+                });
             }).on('exit', function() {
-                log.info("Worker "+file+" exited");
+                log.captureMessage("Worker "+file+" exited",{
+                    tags:{
+                        App:'NODE_BACKGROUND',
+                            BackgroundFile:file
+                    }
+                });
             }).send();
         }
     });
