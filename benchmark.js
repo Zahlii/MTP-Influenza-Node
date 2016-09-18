@@ -1,6 +1,6 @@
 const http = require('request');
 const os = require('os');
-const base = "https://wifo1-30.bwl.uni-mannheim.de:8080"; //os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
+const base = /*"https://wifo1-30.bwl.uni-mannheim.de:8080"; */ os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
 
 
 
@@ -27,7 +27,7 @@ function putRequest(url, data,cb) {
             var status = res.statusCode;
             var responseSize = res.headers['content-length'];
 
-            console.log('PUT'+DEL+url+DEL+time+DEL+status+DEL+responseSize+DEL+(status == 500 ? bdy.message : ''));
+            console.log((new Date()).toLocaleString() + DEL+'PUT'+DEL+url+DEL+time+DEL+status+DEL+responseSize+DEL+(status == 500 ? bdy.message : ''));
         }
 
 
@@ -57,7 +57,7 @@ function rmail() {
 function rdate() {
     return new Date(rnd(0.8,0.9)*Date.now());
 }
-console.log('METHOD'+DEL+'URL'+DEL+'TIME[MS]'+DEL+'HTTP STATUS'+DEL+'RESPONSE SIZE'+DEL+'ERROR');
+console.log('DATE'+DEL+'METHOD'+DEL+'URL'+DEL+'TIME[MS]'+DEL+'HTTP STATUS'+DEL+'RESPONSE SIZE'+DEL+'ERROR');
 
 function run() {
     var mail = rmail(),
@@ -91,7 +91,7 @@ function run() {
                 lat: rlat(),
                 lng: rlng()
             },(bdy) => {
-                for(var j=0;j<10;j++) {
+                for(var j=0;j<1;j++) {
                     putRequest("/api1/location/report", {
                         _user: uid,
                         lat: rlat(),

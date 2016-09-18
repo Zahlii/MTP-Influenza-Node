@@ -47,6 +47,11 @@ const schema = new Schema({
         default: null,
         max: Date.now
     },
+    lastWarningPushNotification: {
+        type: Date,
+        default: null,
+        max: Date.now
+    },
     lastHealthReport: {
         type: Date,
         default: null,
@@ -62,6 +67,16 @@ const schema = new Schema({
             type: Number,
             min: 5,
             default: 60
+        }
+    },
+    lastLocation: {
+        type: {
+            type: String,
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number],
+            required: false
         }
     }
 });

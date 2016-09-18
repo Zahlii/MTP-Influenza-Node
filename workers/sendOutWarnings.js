@@ -15,16 +15,45 @@ const config  = require('config');
 module.exports = function(input, done) {
     scheduleEvery(600,function() {
         const dt = new Date(Date.now()-config.calc.warningTimeInterval*1000);
+        const now = new Date();
 
-        Location.find({
-
+        User.find({
+            $or: [
+                {
+                    lastWarningPushNotification: {
+                        $lt: dt
+                    }
+                },
+                {
+                    lastWarningPushNotification: null
+                }
+            ]
         },(err,result) => {
             if(err) {
 
             } else {
+                //console.log(result);
                 for(var i=0;i<result.length;i++) {
                     var u = result[i];
-                    //u.sendPushNotification({message:"Your last health report was quite some time ago. Please consider sending a new one."});
+                    if(!u.lastLocation || u.lastLocation.coordinates.length<2)
+                        continue;
+
+                    var c = u.lastLocation.coordinates;
+                    console.log('Checking for warning for '+u._id);
+
+                    (function(user) {
+                        Location.getLocationsByProximityAndDate(c[1],c[0],u.settings.warnRadius*1000,now,'-_id -_healthReport -__v -geo.type',(err,locations) => {
+                            if(err) {
+
+                            } else {
+                                var n = locations.length;
+                                console.log('Got ' + n +' flu cases around '+user._id);
+                                if(n >= config.calc.minNewInfectionsForWarning) {
+                                    //user.sendPushNotification({message:"Flu alert! Today there were " + n +" new flu infections in your warning area."});
+                                }
+                            }
+                        });
+                    })(u);
                 }
             }
         });

@@ -5,6 +5,7 @@
 const mongoose = require('mongoose');
 const Location = mongoose.model('Location');
 const HealthReport = mongoose.model('HealthReport');
+const User = mongoose.model('User');
 
 
 module.exports.reportLocation = (req, res, next, isNew) => {
@@ -34,11 +35,22 @@ module.exports.reportLocation = (req, res, next, isNew) => {
             location.healthScore = doc.healthScore;
             location.isNewlyInfected = isNew;
 
-            location.save((err) => {
+            User.update({_id:bdy._user},{
+                $set:{
+                    lastLocation: bdy.geo
+                }
+            },(err) => {
                 if (err) res.send(500, err);
-                else res.send(201, location);
-                return next()
-            })
+                else {
+                    location.save((err) => {
+                        if (err) res.send(500, err);
+                        else res.send(201, location);
+                        return next()
+                    })
+                }
+            });
+
+
         }
     });
 };
