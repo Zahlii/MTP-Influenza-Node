@@ -5,6 +5,7 @@ const pfx = join(__dirname, '../config/influenza_push_service.p12');
 const apnagent = require('apnagent');
 const agent = new apnagent.Agent();
 const config = require('config');
+const log = require('../config/log.js');
 
 agent.set('pfx file', pfx);
 agent.set('passphrase',config.APN.passphrase);
@@ -28,9 +29,19 @@ agent.connect(function (err) {
 
 agent.on('message:error', function (err, msg) {
 
+    log.captureException("APN " + err.name + ":" + err.message, {
+        tags:{
+            App:'NODE_APN'
+        },
+        extra:{
+            err:err,
+            message:msg
+        }
+    });
     switch (err.name) {
         // This error occurs when Apple reports an issue parsing the message.
         case 'GatewayNotificationError':
+
             console.log('[message:error] GatewayNotificationError: %s', err.message);
 
             // The err.code is the number that Apple reports.

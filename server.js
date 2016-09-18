@@ -1,32 +1,18 @@
 'use strict';
 
 const restify = require('restify');
-const bunyan  = require('bunyan');
+
 const routes  = require('./routes/');
 const config  = require('config');
 const monogooseInitiator = require('./model/index.js');
+const log = require('./config/log.js');
 const fs = require('fs');
 const os  = require('os');
 
-const log = bunyan.createLogger({
-    name        : 'logger',
-    level       : config.get('log_level'),
-    streams: [
-        {
-            stream: process.stdout,
-            level: 'debug'
-        },
-        {
-            path: 'restify.log',
-            level: 'trace'
-        }
-    ],
-    serializers : bunyan.stdSerializers
-});
+
 
 var settings = {
-    name : config.get('Server.name')|| 'MTP',
-    log  : log
+    name : config.get('Server.name')|| 'MTP'
 };
 
 
@@ -40,6 +26,7 @@ const server = restify.createServer(settings);
 server.use(restify.bodyParser({ mapParams: false }));
 server.use(restify.queryParser());
 server.use((req, res, next) => {
+    console.log(req.method+" "+req.url);
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     return next();
@@ -48,14 +35,12 @@ server.use(restify.gzipResponse());
 server.pre(restify.pre.sanitizePath());
 
 
-server.on('after', restify.auditLogger({ log: log }));
-//server.on('uncaughtException', restify.auditLogger({ log: log }));
 
 routes(server);
 monogooseInitiator.initMongoose();
 
 
-log.info('Server started.');
+console.log('Server started.');
 server.listen((process.env.PORT ||config.get('Server.port')), function () {
-    log.info('%s listening at %s', server.name, server.url);
+    console.log('%s listening at %s', server.name, server.url);
 });
