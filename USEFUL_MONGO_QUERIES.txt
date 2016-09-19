@@ -1,0 +1,18 @@
+db.getCollection('healthreports').aggregate([
+{
+    $group: {
+        _id: "$_user",
+        count: { $sum:1 }
+    }
+},
+{
+    $match: {
+        count: {$gt: 1}
+    }
+},
+{
+    $sort: {
+        count:-1
+    }
+}
+])

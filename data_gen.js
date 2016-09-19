@@ -112,7 +112,7 @@ function fn_state() {
 function fn_loc() {
     r_uid((err,doc) => {
         rnd_location(doc[0]._id,() => {
-            var t = rnd(10000,60000);
+            var t = rnd(5000,10000);
             console.log('Waiting '+t);
             setTimeout(fn_loc,t);
         });
