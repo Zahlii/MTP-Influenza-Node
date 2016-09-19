@@ -26,7 +26,7 @@ const server = restify.createServer(settings);
 server.use(restify.bodyParser({ mapParams: false }));
 server.use(restify.queryParser());
 server.use((req, res, next) => {
-    console.log(req.method+" "+req.url);
+    console.log((new Date()).toLocaleString()+"\t"+req.method+"\t"+req.url);
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     return next();

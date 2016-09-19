@@ -5,9 +5,9 @@ const argv = require('optimist')
     .default('l', 1)
     .argv;
 
-const base = "https://wifo1-30.bwl.uni-mannheim.de:8080"; // os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
+const base = /*os.hostname() == "wifo1-30" ? */"https://wifo1-30.bwl.uni-mannheim.de:8080"/* : "http://localhost:8080";*/
 
-
+var ID = 1;
 
 const DEL = ';';
 
@@ -32,7 +32,7 @@ function putRequest(url, data,cb) {
             var status = res.statusCode;
             var responseSize = res.headers['content-length'];
 
-            console.log((new Date()).toLocaleString() + DEL+'PUT'+DEL+url+DEL+time+DEL+status+DEL+responseSize+DEL+(status == 500 ? bdy.message : ''));
+            console.log((ID++)+DEL+(new Date()).toLocaleString() + DEL+'PUT'+DEL+url+DEL+time+DEL+status+DEL+responseSize+DEL+(status == 500 ? bdy.message : ''));
         }
 
 
@@ -62,7 +62,7 @@ function rmail() {
 function rdate() {
     return new Date(rnd(0.8,0.9)*Date.now());
 }
-console.log('DATE'+DEL+'METHOD'+DEL+'URL'+DEL+'TIME[MS]'+DEL+'HTTP STATUS'+DEL+'RESPONSE SIZE'+DEL+'ERROR');
+console.log('ID'+DEL+'DATE'+DEL+'METHOD'+DEL+'URL'+DEL+'TIME[MS]'+DEL+'HTTP STATUS'+DEL+'RESPONSE SIZE'+DEL+'ERROR');
 
 function run() {
     var mail = rmail(),
