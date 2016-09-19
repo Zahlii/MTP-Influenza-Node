@@ -81,6 +81,14 @@ const schema = new Schema({
     }
 });
 
+schema.index({'lastHealthReport':1});
+schema.index({'lastPushNotification':1});
+schema.index({'lastWarningPushNotification':1});
+schema.index({'timestamp':1});
+schema.index({'fbUserId':1});
+schema.index({'mail':1});
+schema.index({'lastLocation': '2dsphere'});
+
 schema.statics.getUserByFbId = function(fbId, cb) {
     return this.find({ fbUserId: fbId }, cb);
 };

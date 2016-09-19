@@ -40,7 +40,9 @@ const schema = new Schema({
     }
 });
 
-schema.index({'geo': '2dsphere'})
+schema.index({'healthScore':1});
+schema.index({'timestamp':1});
+schema.index({'geo': '2dsphere'});
 
 schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, date, params, cb) {
     var ts = date.getTime(),
