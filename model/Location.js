@@ -44,11 +44,10 @@ schema.index({'healthScore':1});
 schema.index({'timestamp':1});
 schema.index({'geo': '2dsphere'});
 
-schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, date, params, cb) {
-    var ts = date.getTime(),
-        ts = ts - ts % 86400 * 1000,
-        dateStart = new Date(ts),
-        dateEnd = new Date(ts + 86400 * 1000);
+schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, dateEnd, params, cb) {
+    var ts = dateEnd.getTime(),
+        ts = ts - 86400,
+        dateStart = new Date(ts);
 
 
     return this.model('Location').find(
