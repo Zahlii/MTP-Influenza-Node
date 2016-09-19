@@ -1,13 +1,14 @@
 'use strict';
 
 const restify = require('restify');
-
+const responseTime = require('response-time');
 const routes  = require('./routes/');
 const config  = require('config');
 const monogooseInitiator = require('./model/index.js');
 const log = require('./config/log.js');
 const fs = require('fs');
 const os  = require('os');
+const onFinished = require('on-finished')
 
 
 
@@ -22,13 +23,16 @@ if(os.hostname() == "wifo1-30") {
 }
 const server = restify.createServer(settings);
 
-
+server.use(responseTime({suffix:false}));
 server.use(restify.bodyParser({ mapParams: false }));
 server.use(restify.queryParser());
 server.use((req, res, next) => {
-    console.log((new Date()).toLocaleString()+"\t"+req.method+"\t"+req.url);
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    onFinished(res,(err,res) => {
+        var r = res.getHeader("X-Response-Time");
+        console.log((new Date()).toLocaleString()+"\t"+req.method+"\t"+req.url+"\t"+r);
+    });
     return next();
 });
 server.use(restify.gzipResponse());

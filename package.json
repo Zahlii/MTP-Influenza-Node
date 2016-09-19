@@ -30,9 +30,11 @@
     "fs": "0.0.2",
     "mongoose": "^4.5.3",
     "mysql": "^2.10.2",
+    "on-finished": "^2.3.0",
     "optimist": "^0.6.1",
     "raven": "^0.12.1",
     "request": "^2.74.0",
+    "response-time": "^2.3.1",
     "restify": "^4.0.4",
     "restify-router": "^0.2.1",
     "threads": "^0.7.0"
