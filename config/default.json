@@ -37,5 +37,9 @@
         "sendNotificationOnHealthReportAge":86400,
         "warningTimeInterval":86400,
         "minNewInfectionsForWarning":2
+    },
+    "SLA": {
+        "maxTime":150,
+        "maxTimeBCrypt":300
     }
 }

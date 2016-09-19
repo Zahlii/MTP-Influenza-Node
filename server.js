@@ -35,7 +35,7 @@ server.use((req, res, next) => {
         var url = res.req.url;
         var isWithCrypt = /(auth|register)/.test(url);
         res.req.responseTime = r;
-        var time = isWithCrypt ? 250 : 100;
+        var time = isWithCrypt ? config.get("SLA.maxTimeBCrypt") : config.get("SLA.maxTime");
         if(r > time)
             log.APIError("High response time",null,res.req);
         
