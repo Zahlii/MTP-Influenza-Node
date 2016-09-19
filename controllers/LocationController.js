@@ -15,6 +15,7 @@ module.exports.reportLocation = (req, res, next, isNew) => {
         delete bdy.timestamp
     }
     bdy.geo = {
+        type:'Point',
         coordinates: [bdy.lng, bdy.lat]
     };
     delete bdy.lng;

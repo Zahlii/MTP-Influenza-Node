@@ -30,6 +30,7 @@ module.exports.registerUser = (req,res, next) => {
         bdy.passwordHash = bcrypt.hashSync(bdy.password);
         bdy.deviceTokens = [bdy.deviceToken];
         bdy.lastLocation = {
+            type:'Point',
             coordinates:[0,0]
         };
 
