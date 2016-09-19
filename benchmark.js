@@ -31,7 +31,7 @@ function putRequest(url, data,cb) {
             var time = res.elapsedTime;
             var status = res.statusCode;
             var responseSize = res.headers['content-length'];
-            var t = res.headers['X-Response-Time'];
+            var t = res.headers['x-response-time'];
 
             console.log((ID++)+DEL+(new Date()).toLocaleString() + DEL+'PUT'+DEL+url+DEL+t+DEL+time+DEL+status+DEL+responseSize+DEL+(status == 500 ? bdy.message : ''));
         }
@@ -63,7 +63,7 @@ function rmail() {
 function rdate() {
     return new Date(rnd(0.8,0.9)*Date.now());
 }
-console.log('ID'+DEL+'DATE'+DEL+'METHOD'+DEL+'URL'+DEL+'PROCESSING TIME[MS]'+DEL+'HTTP STATUS'+DEL+'RESPONSE SIZE'+DEL+'ERROR');
+console.log('ID'+DEL+'DATE'+DEL+'METHOD'+DEL+'URL'+DEL+'PROCESSING TIME[MS]'+DEL+'TOTAL TIME[MS]'+DEL+'HTTP STATUS'+DEL+'RESPONSE SIZE'+DEL+'ERROR');
 
 function run() {
     var mail = rmail(),

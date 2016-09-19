@@ -31,6 +31,9 @@ server.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     onFinished(res,(err,res) => {
         var r = res.getHeader("X-Response-Time");
+        if(r > 100)
+            log.APIError("High response time",null,res);
+        
         console.log((new Date()).toLocaleString()+"\t"+req.method+"\t"+req.url+"\t"+r);
     });
     return next();
