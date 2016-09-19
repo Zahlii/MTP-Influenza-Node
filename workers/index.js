@@ -1,6 +1,6 @@
 const fs = require('fs');
 const spawn = require('threads').spawn;
-const log = require('../config/log.js');
+const log = require('../util/log.js');
 
 module.exports = function() {
     fs.readdirSync('./workers').forEach((file) => {

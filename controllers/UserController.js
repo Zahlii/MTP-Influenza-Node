@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const fb = require('fbgraph');
 const bcrypt = require('bcrypt-nodejs');
-const log = require('../config/log.js');
+const log = require('../util/log.js');
 
 module.exports.registerUser = (req,res, next) => {
     const bdy = req.body;

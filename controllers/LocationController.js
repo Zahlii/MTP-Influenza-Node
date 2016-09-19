@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const Location = mongoose.model('Location');
 const HealthReport = mongoose.model('HealthReport');
 const User = mongoose.model('User');
-const log = require('../config/log.js');
+const log = require('../util/log.js');
 
 
 module.exports.reportLocation = (req, res, next, isNew) => {

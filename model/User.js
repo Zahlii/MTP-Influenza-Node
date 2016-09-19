@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const pushAgent = require('./push');
+const pushAgent = require('./../util/push');
 
 const schema = new Schema({
     mail: {

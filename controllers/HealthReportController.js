@@ -2,9 +2,9 @@
 const mongoose = require('mongoose');
 const HealthReport = mongoose.model('HealthReport');
 const User = mongoose.model('User');
-const helpers = require('../model/helpers');
+const helpers = require('../util/helpers');
 const config = require('config');
-const log = require('../config/log.js');
+const log = require('../util/log.js');
 
 module.exports.createHealthReport = (req, res, next) => {
     const bdy = req.body;
