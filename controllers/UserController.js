@@ -29,6 +29,9 @@ module.exports.registerUser = (req,res, next) => {
         bdy.birthDate = new Date(bdy.birthDate);
         bdy.passwordHash = bcrypt.hashSync(bdy.password);
         bdy.deviceTokens = [bdy.deviceToken];
+        bdy.lastLocation = {
+            coordinates:[0,0]
+        };
 
         delete bdy.password;
         delete bdy.deviceToken;
