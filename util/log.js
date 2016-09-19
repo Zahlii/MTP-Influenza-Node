@@ -5,7 +5,9 @@ client.patchGlobal();
 client.APIError = function(message,err,req) {
     //console.log(req);
     var msg = err && err.message ? message + " | " + err.message : message;
+
     console.log(msg);
+    
     if(req && req.body && req.body._user) {
         this.setUserContext({
             id: req.body._user
@@ -15,7 +17,8 @@ client.APIError = function(message,err,req) {
         extra:{
             URL:req.url,
             data:req.body,
-            time:req.responseTime
+            time:req.responseTime,
+            steps:req.timing
         },
         tags:{
             App:'NODE',

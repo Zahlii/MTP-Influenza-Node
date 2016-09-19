@@ -40,6 +40,6 @@
     },
     "SLA": {
         "maxTime":150,
-        "maxTimeBCrypt":300
+        "maxTimeBCrypt":400
     }
 }

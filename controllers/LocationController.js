@@ -7,9 +7,10 @@ const Location = mongoose.model('Location');
 const HealthReport = mongoose.model('HealthReport');
 const User = mongoose.model('User');
 const log = require('../util/log.js');
-
+const time = require('../util/timing.js');
 
 module.exports.reportLocation = (req, res, next, isNew) => {
+    time.start(req);
     const bdy = req.body;
     if (bdy.timestamp) {
         delete bdy.timestamp
@@ -23,8 +24,9 @@ module.exports.reportLocation = (req, res, next, isNew) => {
 
 
     const location = new Location(bdy);
-
+    time.elapsed('Created Location');
     HealthReport.getLastFromUser(bdy._user, (err, doc) => {
+        time.elapsed('Got last HR from user');
         if (err) {
             log.APIError('Error while searching last health report from user',err,req);
             res.send(500, err);
@@ -44,12 +46,14 @@ module.exports.reportLocation = (req, res, next, isNew) => {
                     lastLocation: bdy.geo
                 }
             },(err) => {
+                time.elapsed('Updated lastLocation');
                 if (err) {
                     res.send(500, err);
                     log.APIError('Error while updating user\'s last location',err,req);
                 }
                 else {
                     location.save((err) => {
+                        time.elapsed('Saved new Location');
                         if (err) {
                             res.send(500, err);
                             log.APIError('Error while saving new location',err,req);

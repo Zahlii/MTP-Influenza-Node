@@ -82,7 +82,7 @@ const schema = new Schema({
 
 schema.index({'validTo':1});
 schema.index({'healthScore':1});
-schema.index({'_user':1})
+schema.index({'_user':1});
 schema.index({'issuedOn':1});
 
 schema.methods.getPrevious = function(cb) {

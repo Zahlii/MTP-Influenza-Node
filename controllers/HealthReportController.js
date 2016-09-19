@@ -5,8 +5,10 @@ const User = mongoose.model('User');
 const helpers = require('../util/helpers');
 const config = require('config');
 const log = require('../util/log.js');
+const time = require('../util/timing.js');
 
 module.exports.createHealthReport = (req, res, next) => {
+    time.start(req);
     const bdy = req.body;
 
     if (bdy.issuedOn) {
@@ -18,8 +20,9 @@ module.exports.createHealthReport = (req, res, next) => {
 
 
     const hr = new HealthReport(bdy);
-
+    time.elapsed('HR created');
     User.findById(bdy._user, (err, doc) => {
+        time.elapsed('User for HR found');
         if (err) {
             log.APIError('Error while searching user by ID',err,req);
             res.send(500, err);
@@ -41,7 +44,7 @@ module.exports.createHealthReport = (req, res, next) => {
 
             hr.getPrevious((err, prev) => {
                 var isSick = (hr.healthScore >= config.calc.infectionHealthScoreThreshold);
-
+                time.elapsed('Previous HR found');
                 if (err) {
                     log.APIError('Could not get previous health report',err,req);
                     res.send(500, err);
@@ -51,6 +54,7 @@ module.exports.createHealthReport = (req, res, next) => {
                     // no old health report, so this one is an infection only if it exceeds the threshold
                     hr.isNewlyInfected = isSick;
                     hr.save((err) => {
+                        time.elapsed('Saved first HR');
                         if (err) {
                             log.APIError('Could not save first health report',err,req);
                             res.send(500, err);
@@ -69,6 +73,7 @@ module.exports.createHealthReport = (req, res, next) => {
                     prev.validTo = now;
 
                     prev.save((err)=> {
+                        time.elapsed('Invalidated old HR');
                         if (err) {
                             log.APIError('Could not devalidate previous health report',err,req);
                             res.send(500, err);
@@ -77,6 +82,7 @@ module.exports.createHealthReport = (req, res, next) => {
                         else {
 
                             hr.save((err) => {
+                                time.elapsed('Saved HR');
                                 if (err) {
                                     log.APIError('Could not save health report',err,req);
                                     res.send(500, err);

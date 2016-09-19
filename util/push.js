@@ -5,7 +5,7 @@ const pfx = join(__dirname, '../config/influenza_push_service.p12');
 const apnagent = require('apnagent');
 const agent = new apnagent.Agent();
 const config = require('config');
-const log = require('log.js');
+const log = require('./log');
 
 agent.set('pfx file', pfx);
 agent.set('passphrase',config.APN.passphrase);
