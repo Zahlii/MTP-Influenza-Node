@@ -29,12 +29,17 @@ server.use(restify.queryParser());
 server.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.req = req;
     onFinished(res,(err,res) => {
         var r = res.getHeader("X-Response-Time");
-        if(r > 100)
-            log.APIError("High response time",null,res);
+        var url = res.req.url;
+        var isWithCrypt = /(auth|register)/.test(url);
+
+        var time = isWithCrypt ? 250 : 100;
+        if(r > time)
+            log.APIError("High response time",null,res.req);
         
-        console.log((new Date()).toLocaleString()+"\t"+req.method+"\t"+req.url+"\t"+r);
+        console.log((new Date()).toLocaleString()+"\t"+res.req.method+"\t"+res.req.url+"\t"+r);
     });
     return next();
 });
