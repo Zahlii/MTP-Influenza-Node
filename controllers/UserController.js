@@ -8,6 +8,12 @@ const log = require('../config/log.js');
 module.exports.registerUser = (req,res, next) => {
     const bdy = req.body;
 
+    if(!bdy.deviceToken) {
+        log.APIError('No device token supported during register',null,req);
+        res.send(500, new Error('No device token supported'));
+        return next();
+    }
+
     User.find({mail:bdy.mail},(err,doc) => {
         if(err) {
             log.APIError('Error while searching user by mail',err,req);
@@ -22,10 +28,10 @@ module.exports.registerUser = (req,res, next) => {
 
         bdy.birthDate = new Date(bdy.birthDate);
         bdy.passwordHash = bcrypt.hashSync(bdy.password);
-        bdy.deviceTokens = [];
+        bdy.deviceTokens = [bdy.deviceToken];
 
         delete bdy.password;
-
+        delete bdy.deviceToken;
 
         const newUser = new User(bdy);
 

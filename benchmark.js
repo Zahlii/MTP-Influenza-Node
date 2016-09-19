@@ -1,6 +1,11 @@
 const http = require('request');
 const os = require('os');
-const base = /*"https://wifo1-30.bwl.uni-mannheim.de:8080"; */ os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
+const argv = require('optimist')
+    .default('u', 1)
+    .default('l', 1)
+    .argv;
+
+const base = "https://wifo1-30.bwl.uni-mannheim.de:8080"; // os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
 
 
 
@@ -69,41 +74,36 @@ function run() {
         gender: rbool() ? 'm' : 'f',
         firstName: rstring(8),
         lastName: rstring(8),
-        birthDate: rdate()
+        birthDate: rdate(),
+		deviceToken: "abc"
     },(bdy) => {
-        putRequest("/api1/user/authnormal", {
-            mail: mail,
-            password: pass,
-            deviceToken: "abc"
-        }, (bdy) => {
-            const uid = bdy._id;
+		const uid = bdy._id;
 
-            putRequest("/api1/healthstate", {
-                _user: uid,
-                isSick: rbool(),
-                smileyRating: Math.floor(rnd(1, 5)),
-                hasHeadache: rbool(),
-                hasSoreThroat: rbool(),
-                hasCoughing: rbool(),
-                hasFever: rbool(),
-                hasRunningNose: rbool(),
-                hasLimbPain: rbool(),
-                lat: rlat(),
-                lng: rlng()
-            },(bdy) => {
-                for(var j=0;j<1;j++) {
-                    putRequest("/api1/location/report", {
-                        _user: uid,
-                        lat: rlat(),
-                        lng: rlng()
-                    });
-                }
-            });
-        });
+		putRequest("/api1/healthstate", {
+			_user: uid,
+			isSick: rbool(),
+			smileyRating: Math.floor(rnd(1, 5)),
+			hasHeadache: rbool(),
+			hasSoreThroat: rbool(),
+			hasCoughing: rbool(),
+			hasFever: rbool(),
+			hasRunningNose: rbool(),
+			hasLimbPain: rbool(),
+			lat: rlat(),
+			lng: rlng()
+		},(bdy) => {
+			for(var j=0;j<argv.l;j++) {
+				putRequest("/api1/location/report", {
+					_user: uid,
+					lat: rlat(),
+					lng: rlng()
+				});
+			}
+		});
     });
 
 }
 
-for(var i=0;i<20;i++) {
+for(var i=0;i<argv.u;i++) {
     run();
 }
