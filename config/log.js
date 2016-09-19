@@ -14,7 +14,8 @@ client.APIError = function(message,err,req) {
     this.captureException(new Error(msg),{
         extra:{
             URL:req.url,
-            data:req.body
+            data:req.body,
+            time:req.responseTime
         },
         tags:{
             App:'NODE',

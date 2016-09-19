@@ -34,7 +34,7 @@ server.use((req, res, next) => {
         var r = res.getHeader("X-Response-Time");
         var url = res.req.url;
         var isWithCrypt = /(auth|register)/.test(url);
-
+        res.req.responseTime = r;
         var time = isWithCrypt ? 250 : 100;
         if(r > time)
             log.APIError("High response time",null,res.req);
