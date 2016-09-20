@@ -9,7 +9,7 @@ const User = mongoose.model('User');
 const log = require('../util/log.js');
 const time = require('../util/timing.js');
 
-module.exports.reportLocation = (req, res, next, isNew) => {
+module.exports.reportLocation = (req, res, next, isNew, lastHR) => {
     time.start(req);
     const bdy = req.body;
     if (bdy.timestamp) {
@@ -25,7 +25,8 @@ module.exports.reportLocation = (req, res, next, isNew) => {
 
     const location = new Location(bdy);
     time.elapsed('Created Location');
-    HealthReport.getLastFromUser(bdy._user, (err, doc) => {
+
+    function cb(err, doc) {
         time.elapsed('Got last HR from user');
         if (err) {
             log.APIError('Error while searching last health report from user',err,req);
@@ -63,10 +64,14 @@ module.exports.reportLocation = (req, res, next, isNew) => {
                     })
                 }
             });
-
-
         }
-    });
+    }
+    // cache lastHR from /healthstate endpoint
+    if(lastHR) {
+        cb(null,[lastHR]);
+    } else {
+        HealthReport.getLastFromUser(bdy._user, cb);
+    }
 };
 
 module.exports.getLocationsByProximityAndDate = (req, res, next) => {

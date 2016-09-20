@@ -1,7 +1,7 @@
 'use strict';
 var start = process.hrtime();
 var astart = process.hrtime();
-var _m = {};
+var _m = [];
 var _req;
 
 module.exports = {
@@ -14,14 +14,15 @@ module.exports = {
         var as = aelapsed.toFixed(precision) + "ms total";
         //console.log(name, s, as);
         start = process.hrtime(); // reset the timer
-        _m[name] = [s,as];
+        _m.push([name,s,as]);
+        //console.log(name + s);
         return s;
     },
     start:function(req) {
         if(!req.timing) {
             astart = process.hrtime();
             start = process.hrtime();
-            _m = {};
+            _m = [];
             _req = req;
             req.timing = _m;
         }

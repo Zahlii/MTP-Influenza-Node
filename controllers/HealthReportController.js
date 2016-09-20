@@ -81,7 +81,7 @@ module.exports.createHealthReport = (req, res, next) => {
                         }
                         else {
 
-                            hr.save((err) => {
+                            hr.save((err,newHR) => {
                                 time.elapsed('Saved HR');
                                 if (err) {
                                     log.APIError('Could not save health report',err,req);
@@ -89,7 +89,7 @@ module.exports.createHealthReport = (req, res, next) => {
                                     return next()
                                 }
                                 else {
-                                    require('./LocationController').reportLocation(req,res,next,true);
+                                    require('./LocationController').reportLocation(req,res,next,true,newHR);
                                 }
                             });
                         }
