@@ -7,7 +7,7 @@ client.APIError = function(message,err,req) {
     var msg = err && err.message ? message + " | " + err.message : message;
 
     console.log(msg);
-    
+
     if(req && req.body && req.body._user) {
         this.setUserContext({
             id: req.body._user
@@ -26,6 +26,18 @@ client.APIError = function(message,err,req) {
         }
     });
     this.setUserContext();
+};
+client.backgroundError = function(message,err) {
+    //console.log(req);
+    var msg = err && err.message ? message + " | " + err.message : message;
+
+    console.log(msg);
+    this.captureException(new Error(msg),{
+        tags:{
+            App:'NODE_BACKGROUND'
+        }
+    });
+
 };
 
 module.exports = client;

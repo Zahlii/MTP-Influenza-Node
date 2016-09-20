@@ -38,7 +38,7 @@ server.use((req, res, next) => {
         var time = isWithCrypt ? config.get("SLA.maxTimeBCrypt") : config.get("SLA.maxTime");
         if(r > time)
             log.APIError("High response time",null,res.req);
-        
+
         console.log((new Date()).toLocaleString()+"\t"+res.req.method+"\t"+res.req.url+"\t"+r);
     });
     return next();
@@ -47,9 +47,9 @@ server.use(restify.gzipResponse());
 server.pre(restify.pre.sanitizePath());
 
 
-
-routes(server);
 monogooseInitiator.initMongoose();
+routes(server);
+
 
 
 console.log('Server started.');
