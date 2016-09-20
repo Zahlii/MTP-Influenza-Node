@@ -10,6 +10,7 @@ monogooseInitiator.initMongoose();
 const User = mongoose.model('User');
 const HealthReport = mongoose.model('HealthReport');
 const config  = require('config');
+const log = require('../util/log.js');
 
 module.exports = function(input, done) {
     scheduleEvery(600,function() {
@@ -44,7 +45,7 @@ module.exports = function(input, done) {
             ]
         },(err,result) => {
             if(err) {
-
+                log.backgroundError("Failed getting users based on last healthstate", err);
             } else {
 
                 for(var i=0;i<result.length;i++) {

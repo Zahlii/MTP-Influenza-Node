@@ -11,6 +11,7 @@ const User = mongoose.model('User');
 const HealthReport = mongoose.model('HealthReport');
 const Location = mongoose.model('Location');
 const config  = require('config');
+const log = require('../util/log.js');
 
 module.exports = function(input, done) {
     scheduleEvery(600,function() {
@@ -30,7 +31,7 @@ module.exports = function(input, done) {
             ]
         },(err,result) => {
             if(err) {
-
+                log.backgroundError("Failed getting users based on last warning", err);
             } else {
                 //console.log(result);
                 for(var i=0;i<result.length;i++) {
@@ -44,7 +45,7 @@ module.exports = function(input, done) {
                     (function(user) {
                         Location.getLocationsByProximityAndDate(c[1],c[0],u.settings.warnRadius*1000,now,'-_id -_healthReport -__v -geo.type',(err,locations) => {
                             if(err) {
-
+                                log.backgroundError("Failed getting locations around user", err);
                             } else {
                                 var n = locations.length;
                                 console.log('Got ' + n +' flu cases around '+user._id);
