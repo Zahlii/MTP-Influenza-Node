@@ -3,21 +3,10 @@ const Router = require('restify-router').Router;
 
 module.exports = (server) => {
     const api1router = new Router();
-    api1router.get('/heatmap/now/:lat/:lng', (req, res, next) => {
-        require('../controllers/heatmap')
-            .displayHeatmapData(req.params.lat,req.params.lng,new Date(),res);
-        return next();
-    });
 
     api1router.put('/healthstate', (req, res, next) => {
         require('../controllers/HealthReportController')
             .createHealthReport(req, res, next);
-        return next();
-    });
-
-    api1router.get('/heatmap/history/:date/:lat/:lng', (req, res, next) => {
-        require('../controllers/HealthReportController')
-            .getLastHealthReport(req, res, next);
         return next();
     });
 
@@ -54,6 +43,12 @@ module.exports = (server) => {
     api1router.put('/push', (req, res, next) => {
         require('../controllers/UserController')
             .sendPushNotification(req, res, next)
+        return next();
+    });
+
+    api1router.put('/kpi/new_infections', (req, res, next) => {
+        require('../controllers/KPIController')
+            .getNewInfectionsAroundUserAtDate(req, res, next)
         return next();
     });
 

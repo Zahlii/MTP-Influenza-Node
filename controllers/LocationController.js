@@ -70,10 +70,9 @@ module.exports.reportLocation = (req, res, next, isNew) => {
 };
 
 module.exports.getLocationsByProximityAndDate = (req, res, next) => {
-    const exclude = '-_id -_healthReport -__v -geo.type';
     const bdy = req.body;
     Location.getLocationsByProximityAndDate(bdy.lat, bdy.lng,
-        bdy.proximity, new Date(bdy.date), exclude, (err, locations) => {
+        bdy.proximity, new Date(bdy.date), (err, locations) => {
             if (err) {
                 log.APIError('Error while querying location data',err,req);
                 res.send(500, err);
