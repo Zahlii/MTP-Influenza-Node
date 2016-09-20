@@ -16,3 +16,13 @@ db.getCollection('healthreports').aggregate([
     }
 }
 ])
+
+
+db.getCollection('locations').aggregate([
+    {
+        $group: {
+            _id: { $dateToString: {format:"%Y-%m-%d", date: "$timestamp" }},
+            count: { $sum: 1 }
+        }
+    }
+])
