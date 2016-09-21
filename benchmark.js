@@ -5,7 +5,7 @@ const argv = require('optimist')
     .default('l', 1)
     .argv;
 
-const base = os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
+const base = /*os.hostname() == "wifo1-30" ? */"https://wifo1-30.bwl.uni-mannheim.de:8080";// : "http://localhost:8080";
 
 var ID = 1;
 

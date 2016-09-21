@@ -52,7 +52,7 @@ function  rnd(min,max) {
     return((Math.random()*(max-min)+min));
 }
 function rlat() {
-    return rnd(48,49);
+    return rnd(49,50);
 }
 function rlng() {
     return rnd(8,9);
