@@ -20,6 +20,12 @@ const schema = new Schema({
         max: Date.now,
         min: new Date('1896-06-30')
     },
+    registeredOn: {
+        type: Date,
+        required: true,
+        default: Date.now,
+        max: Date.now
+    },
     passwordHash: {
         type: String
     },

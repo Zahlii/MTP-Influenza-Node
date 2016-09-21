@@ -8,7 +8,7 @@ const monogooseInitiator = require('./model/index.js');
 const log = require('./util/log.js');
 const fs = require('fs');
 const os  = require('os');
-const onFinished = require('on-finished')
+const onFinished = require('on-finished');
 
 
 

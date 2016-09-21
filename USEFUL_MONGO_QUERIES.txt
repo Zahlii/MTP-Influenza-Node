@@ -26,3 +26,5 @@ db.getCollection('locations').aggregate([
         }
     }
 ])
+
+db.getCollection('system.profile').aggregate([{$group:{_id:"$command",count:{$sum:1},avg:{$avg:"$millis"}}}])
