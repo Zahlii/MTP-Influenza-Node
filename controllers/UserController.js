@@ -134,6 +134,10 @@ module.exports.authUserByFB = (req, res, next) => {
             bdy.firstName = fbres.first_name;
             bdy.lastName = fbres.last_name;
             bdy.gender = fbres.gender === 'male' ? 'm' : 'f';
+            bdy.lastLocation = {
+                type:'Point',
+                coordinates:[0,0]
+            };
 
             User.getUserByFbId(bdy.fbUserId,(err,doc) => {
                 if (err) {

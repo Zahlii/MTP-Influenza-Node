@@ -53,7 +53,7 @@ module.exports.createHealthReport = (req, res, next) => {
                 else if (prev == null || prev.length == 0) {
                     // no old health report, so this one is an infection only if it exceeds the threshold
                     hr.isNewlyInfected = isSick;
-                    hr.save((err) => {
+                    hr.save((err,newHR) => {
                         time.elapsed('Saved first HR');
                         if (err) {
                             log.APIError('Could not save first health report',err,req);
@@ -61,7 +61,7 @@ module.exports.createHealthReport = (req, res, next) => {
                             return next()
                         }
                         else {
-                            require('./LocationController').reportLocation(req,res,next,true);
+                            require('./LocationController').reportLocation(req,res,next,newHR);
                         }
                     });
                     return next()
