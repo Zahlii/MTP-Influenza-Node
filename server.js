@@ -1,4 +1,7 @@
 'use strict';
+require('pmx').init({
+    http : true
+});
 
 const restify = require('restify');
 const responseTime = require('response-time');

@@ -1,5 +1,9 @@
 "use strict";
 
+require('pmx').init({
+    http : true
+});
+
 const http = require('request');
 const os = require('os');
 const monogooseInitiator = require('./model/index.js');
@@ -8,7 +12,7 @@ monogooseInitiator.initMongoose();
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
-const base = /*os.hostname() == "wifo1-30" ? */"https://wifo1-30.bwl.uni-mannheim.de:8080"/* : "http://localhost:8080";*/
+const base = os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
 
 var ID = 1;
 
@@ -103,8 +107,8 @@ fn_loc();
 function fn_state() {
     r_uid((err,doc) => {
         rnd_healthstate(doc[0]._id,() => {
-            var t = rnd(10000,60000);
-            console.log('Waiting '+t);
+            var t = rnd(200,1000)*60;
+            //console.log('Waiting '+t);
             setTimeout(fn_state,t);
         });
     });
@@ -112,8 +116,8 @@ function fn_state() {
 function fn_loc() {
     r_uid((err,doc) => {
         rnd_location(doc[0]._id,() => {
-            var t = rnd(5000,10000);
-            console.log('Waiting '+t);
+            var t = rnd(100,300)*60;
+            //console.log('Waiting '+t);
             setTimeout(fn_loc,t);
         });
     });
