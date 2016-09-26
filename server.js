@@ -5,6 +5,7 @@ require('pmx').init({
 
 const restify = require('restify');
 const responseTime = require('response-time');
+const timing = require('./util/timing.js');
 const routes  = require('./routes/');
 const config  = require('config');
 const monogooseInitiator = require('./model/index.js');
@@ -32,21 +33,28 @@ server.use(restify.queryParser());
 server.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    //res.req = req;
+    timing.start(req);
+    res.info =  {
+        method: req.method,
+        url: req.url,
+        body: req.body,
+        responseTime: 0,
+        timing:req.timing
+    };
     onFinished(res,(err,res) => {
-        //var r = res.getHeader("X-Response-Time");
-        //var url = res.req.url;
-        //var isWithCrypt = /(auth|register)/.test(url);
-        //res.req.responseTime = r;
-        //var time = isWithCrypt ? config.get("SLA.maxTimeBCrypt") : config.get("SLA.maxTime");
-        //if(r > time)
-        //    log.APIError("High response time",null,res.req);
+        var r = res.getHeader("X-Response-Time");
+        var url = res.info.url;
+        var isWithCrypt = /(auth|register)/.test(url);
+        res.info.responseTime = r;
+        var time = isWithCrypt ? config.get("SLA.maxTimeBCrypt") : config.get("SLA.maxTime");
+        if(r > time)
+            log.APIError("High response time",null,res.info);
 
-        //console.log((new Date()).toLocaleString()+"\t"+res.req.method+"\t"+res.req.url+"\t"+r);
+        console.log((new Date()).toLocaleString()+"\t"+res.info.method+"\t"+res.info.url+"\t"+r);
     });
     return next();
 });
-server.use(restify.gzipResponse());
+//server.use(restify.gzipResponse());
 server.pre(restify.pre.sanitizePath());
 
 
