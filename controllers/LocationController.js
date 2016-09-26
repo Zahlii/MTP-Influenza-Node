@@ -10,7 +10,7 @@ const log = require('../util/log.js');
 const timing = require('../util/timing.js');
 
 module.exports.reportLocation = (req, res, next, isNew, lastHR) => {
-    time.start(req);
+    timing.start(req);
     const bdy = req.body;
     if (bdy.timestamp) {
         delete bdy.timestamp
@@ -24,10 +24,10 @@ module.exports.reportLocation = (req, res, next, isNew, lastHR) => {
 
 
     const location = new Location(bdy);
-    time.elapsed('Created Location');
+    timing.elapsed('Created Location');
 
     function cb(err, doc) {
-        time.elapsed('Got last HR from user');
+        timing.elapsed('Got last HR from user');
         if (err) {
             log.APIError('Error while searching last health report from user',err,req);
             res.send(500, err);
@@ -47,14 +47,14 @@ module.exports.reportLocation = (req, res, next, isNew, lastHR) => {
                     lastLocation: bdy.geo
                 }
             },(err) => {
-                time.elapsed('Updated lastLocation');
+                timing.elapsed('Updated lastLocation');
                 if (err) {
                     res.send(500, err);
                     log.APIError('Error while updating user\'s last location',err,req);
                 }
                 else {
                     location.save((err) => {
-                        time.elapsed('Saved new Location');
+                        timing.elapsed('Saved new Location');
                         if (err) {
                             res.send(500, err);
                             log.APIError('Error while saving new location',err,req);
