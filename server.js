@@ -34,7 +34,7 @@ server.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     //res.req = req;
     onFinished(res,(err,res) => {
-        var r = res.getHeader("X-Response-Time");
+        //var r = res.getHeader("X-Response-Time");
         //var url = res.req.url;
         //var isWithCrypt = /(auth|register)/.test(url);
         //res.req.responseTime = r;
@@ -42,11 +42,11 @@ server.use((req, res, next) => {
         //if(r > time)
         //    log.APIError("High response time",null,res.req);
 
-        console.log((new Date()).toLocaleString()+"\t"+res.req.method+"\t"+res.req.url+"\t"+r);
+        //console.log((new Date()).toLocaleString()+"\t"+res.req.method+"\t"+res.req.url+"\t"+r);
     });
     return next();
 });
-//server.use(restify.gzipResponse());
+server.use(restify.gzipResponse());
 server.pre(restify.pre.sanitizePath());
 
 

@@ -76,18 +76,19 @@ module.exports.reportLocation = (req, res, next, isNew, lastHR) => {
 
 module.exports.getLocationsByProximityAndDate = (req, res, next) => {
     const bdy = req.body;
-	time.start(req);
+	//time.start(req);
     Location.getLocationsByProximityAndDate(bdy.lat, bdy.lng,
         bdy.proximity, new Date(bdy.date), (err, locations) => {
-			time.elapsed('Got location response from DB');
+			//time.elapsed('Got location response from DB');
             if (err) {
                 log.APIError('Error while querying location data',err,req);
                 res.send(500, err);
             }
             else {
                 // TODO klären ob hier Umformatierung des Geo-Attributes notwendig ist und ggfs vornehmen.
-                res.send(200, locations)
-				time.elapsed('Finished sending location response');
+                res.send(200, locations);
+                locations = null;
+				//time.elapsed('Finished sending location response');
             }
             return next();
         });
