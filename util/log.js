@@ -13,6 +13,14 @@ client.APIError = function(message,err,req) {
             id: req.body._user
         });
     }
+    if(!req) {
+        req = {
+            url:'*',
+            data:{},
+            time:0,
+            steps:[]
+        }
+    }
     this.captureException(new Error(msg),{
         extra:{
             URL:req.url,

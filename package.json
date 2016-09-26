@@ -18,6 +18,10 @@
   "bugs": {
     "url": "https://github.com/Zahlii/MTP-Influenza-Node/issues"
   },
+  "config": {
+    "port" : 27016,
+    "ip" : "127.0.0.1"
+  },
   "homepage": "https://github.com/Zahlii/MTP-Influenza-Node#readme",
   "dependencies": {
     "apnagent": "^1.1.3",
