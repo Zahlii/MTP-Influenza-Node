@@ -13,7 +13,7 @@ const fs = require('fs');
 const os  = require('os');
 const onFinished = require('on-finished');
 
-
+console.log(process.cwd());
 
 var settings = {
     name : config.get('Server.name')|| 'MTP'
