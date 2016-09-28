@@ -50,7 +50,9 @@ module.exports = function(input, done) {
                                 var n = locations.length;
                                 console.log('Got ' + n +' flu cases around '+user._id);
                                 if(n >= config.calc.minNewInfectionsForWarning) {
-                                    //user.sendPushNotification({message:"Flu alert! Today there were " + n +" new flu infections in your warning area."});
+                                    user.lastWarningPushNotification = new Date();
+                                    user.save();
+                                    user.sendPushNotification({message:"Flu alert! Today there were " + n +" new flu infections in your warning area."});
                                 }
                             }
                         });
