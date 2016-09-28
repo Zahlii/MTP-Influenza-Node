@@ -14,6 +14,8 @@ const log = require('../util/log.js');
 
 module.exports = function(input, done) {
     scheduleEvery(600,function() {
+        console.log(new Date().toLocaleString() + "\tasking for new health reports...");
+
         const dt = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
 
         User.find({
@@ -47,7 +49,7 @@ module.exports = function(input, done) {
             if(err) {
                 log.backgroundError("Failed getting users based on last healthstate", err);
             } else {
-
+                console.log(new Date().toLocaleString() + "\tfound "+result.length+ " users to remind");
                 for(var i=0;i<result.length;i++) {
                     var u = result[i];
                     console.log('Sending out healthstate reminder to '+u._id);

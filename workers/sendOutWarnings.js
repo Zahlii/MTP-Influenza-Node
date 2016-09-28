@@ -18,6 +18,8 @@ module.exports = function(input, done) {
         const dt = new Date(Date.now()-config.calc.warningTimeInterval*1000);
         const now = new Date();
 
+        console.log(new Date().toLocaleString() + "\twarning users...");
+
         User.find({
             $or: [
                 {
@@ -33,7 +35,7 @@ module.exports = function(input, done) {
             if(err) {
                 log.backgroundError("Failed getting users based on last warning", err);
             } else {
-                //console.log(result);
+                console.log(new Date().toLocaleString() + "\tfound "+result.length+ " users to check");
                 for(var i=0;i<result.length;i++) {
                     var u = result[i];
                     if(!u.lastLocation || u.lastLocation.coordinates.length<2)
