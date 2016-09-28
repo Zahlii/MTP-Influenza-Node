@@ -38,3 +38,5 @@ restify.log
 nohup.out
 *.csv
 *.xlsx
+
+tiles
