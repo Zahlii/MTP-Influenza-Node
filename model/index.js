@@ -1,6 +1,7 @@
 'use strict';
 const config  = require('config');
 const fs = require('fs');
+const os = require('os');
 const mongoconfig = config.get('MongoDB');
 const mongoose = require('mongoose');
 
@@ -8,7 +9,13 @@ let initialized = false;
 
 module.exports.initMongoose = () => {
     if (!initialized) {
-        mongoose.connect(mongoconfig.host, mongoconfig.options);
+
+        var h = mongoconfig.host;
+
+        if(os.hostname() != "wifo1-30")
+            h = "mongodb://wifo1-30.bwl.uni-mannheim.de:27016/mtp-influenza";
+
+        mongoose.connect(h, mongoconfig.options);
         fs.readdirSync('./model').forEach((file) => {
             if (file.substr(-3, 3) === '.js' && file !== 'index.js') {
                 const classname = file.replace('.js', '');

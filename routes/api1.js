@@ -52,6 +52,12 @@ module.exports = (server) => {
         return next();
     });
 
+    api1router.get('/tiles/:z/:x/:y.png', (req, res, next) => {
+        require('../controllers/TileController')
+            .renderTile(req, res, next)
+        return next();
+    });
+
     api1router.applyRoutes(server, '/api1');
 
 };
