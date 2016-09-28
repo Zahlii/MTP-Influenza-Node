@@ -40,3 +40,4 @@ nohup.out
 *.xlsx
 
 tiles
+!clear.png
