@@ -27,7 +27,7 @@
 
         var imageMapType = new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
-                if (zoom < 10 || zoom > 15) {
+                if (zoom < 8 || zoom > 15) {
                     return null;
                 }
 
