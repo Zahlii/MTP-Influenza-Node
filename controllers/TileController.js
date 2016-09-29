@@ -153,7 +153,11 @@ function getTileInfo(x,y,z) {
             if(fs.existsSync(current))
                 continue;
 
-            fs.mkdir(current);
+            try {
+                fs.mkdir(current);
+            } catch(e) {
+                //continue;
+            }
         }
 
         return {
