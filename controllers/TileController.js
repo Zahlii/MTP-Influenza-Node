@@ -96,23 +96,34 @@ function renderTileInternal(x,y,z,path,cb) {
 
     getDataPoints(box,(err,data) => {
         timing.elapsed('Got required data points');
-        var heat = heatmap(256,256, { radius : 30 });
+
 
         if(err) {
             //log.backgroundError("Failed loading heatmap tile data",err);
             path = base + '/tiles/clear.png';
         } else {
             //console.log('Size: '+data.length);
-            for (var i = 0, l = data.length; i < l; i++) {
-                var d = data[i];
-                var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1],d.geo.coordinates[0]);
-                heat.addPoint(cx.x, cx.y, { weight:d.healthScore/100.0});
-                //console.log(cx);
+
+            var l = data.length;
+            if (l == 0) {
+                var clear = base + '/tiles/clear.png';
+                var inStr = fs.createReadStream(clear);
+                var outStr = fs.createWriteStream(path);
+
+                inStr.pipe(outStr);
+            } else {
+                var heat = heatmap(256, 256, {radius: 30});
+                for (var i = 0; i < l; i++) {
+                    var d = data[i];
+                    var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1], d.geo.coordinates[0]);
+                    heat.addPoint(cx.x, cx.y, {weight: d.healthScore / 100.0});
+                    //console.log(cx);
+                }
+
+                heat.draw();
+
+                fs.writeFileSync(path, heat.canvas.toBuffer());
             }
-
-            heat.draw();
-
-            fs.writeFileSync(path, heat.canvas.toBuffer());
 
         }
 
