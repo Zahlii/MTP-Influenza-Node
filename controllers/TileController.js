@@ -126,7 +126,7 @@ function renderTileInternal(dateStart,dateEnd,x,y,z,path,cb,res) {
                 for (var i = 0; i < l; i++) {
                     var d = data[i];
 
-                    var fact = Math.pow(2,(15-z)/2);
+                    var fact = 1;//Math.pow(2,(15-z)/2);
                     var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1], d.geo.coordinates[0]);
                     heat.addPoint(cx.x, cx.y, {weight: d.healthScore / 100.0 / fact});
                     //console.log(cx);
