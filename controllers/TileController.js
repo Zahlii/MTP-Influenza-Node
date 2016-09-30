@@ -20,16 +20,22 @@ const merc = new SphericalMercator({
 
 module.exports.renderTile = (req,res,next) => {
     timing.start(req);
-    var d = new Date(),
+    var year = req.params.year,
+        month = req.params.month,
+        day = req.params.day,
+        hour = req.params.hour,
+        hour = hour - hour % 6,
+        dateEnd = new Date(year + '-' + month + '-' + day + ' ' + hour +':00:00'),
+        dateStart = new Date(dateEnd.getTime() - 86400*1000),
         x = req.params.x,
         z = req.params.z,
         y = req.params["y.png"].match(/\d+/)[0];
 
-    var i = getTileInfo(x,y,z);
+    var i = getTileInfo(year,month,day,hour,x,y,z);
 
     if(!i.exists) {
         timing.elapsed('Not existing, rendering...');
-        renderTileInternal(x,y,z,i.path, () => {
+        renderTileInternal(dateStart,dateEnd,x,y,z,i.path, () => {
             timing.elapsed('Sent rendered file to client');
         },res);
     } else {
@@ -58,7 +64,7 @@ function getLocationCoordinates(x,y,z,lat,lng) {
     }
 }
 
-function getDataPoints(bbox,cb) {
+function getDataPoints(dateStart,dateEnd,bbox,cb) {
     // [ 8.4375, 49.15296965617039, 8.7890625, 49.38237278700955 ] sw, ne
 
 
@@ -75,6 +81,10 @@ function getDataPoints(bbox,cb) {
     // {geo: { $geoWithin: { $geometry: { type:"Polygon", coordinates: [[[8,49],[8,50],[9,50],[9,49],[8,49]]] } } } }
     // sw, nw, ne, se, sw
     Location.find({
+        timestamp: {
+            $gte:dateStart,
+            $lte:dateEnd
+        },
         geo: {
             $geoWithin: {
                 $geometry: {
@@ -88,12 +98,12 @@ function getDataPoints(bbox,cb) {
 
 
 }
-function renderTileInternal(x,y,z,path,cb,res) {
+function renderTileInternal(dateStart,dateEnd,x,y,z,path,cb,res) {
 
 
     var box = merc.bbox(x,y,z);
 
-    getDataPoints(box,(err,data) => {
+    getDataPoints(dateStart,dateEnd,box,(err,data) => {
         timing.elapsed('Got required data points');
 
 
@@ -141,8 +151,8 @@ function renderTileInternal(x,y,z,path,cb,res) {
 
 }
 
-function getTileInfo(x,y,z) {
-    var dir =  '/tiles/' + z + '/' + x + '/',
+function getTileInfo(year,month,day,hour,x,y,z) {
+    var dir =  ['/tiles',year,month,day,hour,z,x].join('/'),
         img = base + dir + '/' + y + '.png';
 
 
@@ -165,7 +175,7 @@ function getTileInfo(x,y,z) {
                     // console.log(err);
                 });
             } catch(e) {
-                var i = 0;
+                var z = 0;
                 //console.log(e);
             }
         }
