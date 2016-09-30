@@ -107,7 +107,7 @@ fn_loc();
 function fn_state() {
     r_uid((err,doc) => {
         rnd_healthstate(doc[0]._id,() => {
-            var t = rnd(200,1000);
+            var t = rnd(20,100);
             //console.log('Waiting '+t);
             setTimeout(fn_state,t);
         });
@@ -116,7 +116,7 @@ function fn_state() {
 function fn_loc() {
     r_uid((err,doc) => {
         rnd_location(doc[0]._id,() => {
-            var t = rnd(100,300);
+            var t = rnd(10,30);
             //console.log('Waiting '+t);
             setTimeout(fn_loc,t);
         });

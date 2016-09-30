@@ -25,23 +25,22 @@ module.exports.renderTile = (req,res,next) => {
         z = req.params.z,
         y = req.params["y.png"].match(/\d+/)[0];
 
-    var i = getTileInfo(x,y,z),
-        cb = (path) => {
-            timing.elapsed('Sending file to client');
-            var img = fs.createReadStream(path);
-
-            //res.writeHead(200, {'Content-Type': 'image/png','Cache-Control': 'max-age=31556926' });
-            res.statusCode = 200;
-            img.pipe(res);
-            timing.elapsed('Sent file to client');
-            return next();
-        };
+    var i = getTileInfo(x,y,z);
 
     if(!i.exists) {
         timing.elapsed('Not existing, rendering...');
-        renderTileInternal(x,y,z,i.path, cb);
+        renderTileInternal(x,y,z,i.path, () => {
+            timing.elapsed('Sent rendered file to client');
+        },res);
     } else {
-        cb(i.path);
+        timing.elapsed('Sending file to client');
+        var img = fs.createReadStream(i.path);
+
+        res.set({'Content-Type': 'image/png','Cache-Control': 'max-age=31556926' });
+        res.statusCode = 200;
+        img.pipe(res);
+        timing.elapsed('Sent file to client');
+        return next();
     }
 
 };
@@ -89,7 +88,7 @@ function getDataPoints(bbox,cb) {
 
 
 }
-function renderTileInternal(x,y,z,path,cb) {
+function renderTileInternal(x,y,z,path,cb,res) {
 
 
     var box = merc.bbox(x,y,z);
@@ -110,25 +109,33 @@ function renderTileInternal(x,y,z,path,cb) {
                 var inStr = fs.createReadStream(clear);
                 var outStr = fs.createWriteStream(path);
 
+                inStr.pipe(res);
                 inStr.pipe(outStr);
             } else {
-                var heat = heatmap(256, 256, {radius: 30});
+                var heat = heatmap(256, 256, {radius: 20});
                 for (var i = 0; i < l; i++) {
                     var d = data[i];
+
+                    var fact = Math.pow(2,(15-z)/2);
                     var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1], d.geo.coordinates[0]);
-                    heat.addPoint(cx.x, cx.y, {weight: d.healthScore / 100.0});
+                    heat.addPoint(cx.x, cx.y, {weight: d.healthScore / 100.0 / fact});
                     //console.log(cx);
                 }
 
+                timing.elapsed('Starting to draw');
                 heat.draw();
+                timing.elapsed('Streaming data');
+                var source = heat.canvas.createPNGStream();
+                var file = fs.createWriteStream(path);
 
-                fs.writeFileSync(path, heat.canvas.toBuffer());
+                source.pipe(res);
+                source.pipe(file);
             }
 
         }
 
         if(cb)
-            cb(path);
+            cb();
     });
 
 
@@ -154,9 +161,12 @@ function getTileInfo(x,y,z) {
                 continue;
 
             try {
-                fs.mkdir(current);
+                fs.mkdir(current,(err) => {
+                    // console.log(err);
+                });
             } catch(e) {
-                //continue;
+                var i = 0;
+                //console.log(e);
             }
         }
 
