@@ -15,6 +15,14 @@
     	instances   	: 1,
     	exec_mode   	: "fork",
     	cwd		: "/home/influenza/src/MTP-Influenza-Node/"
+  },{
+	  name        : "data_gen",
+	  node_args	: "",
+	  script      	: "/home/influenza/src/MTP-Influenza-Node/data_gen.js",
+	  watch       	: false,
+	  instances   	: 1,
+	  exec_mode   	: "fork",
+	  cwd		: "/home/influenza/src/MTP-Influenza-Node/"
   }]
 }
 

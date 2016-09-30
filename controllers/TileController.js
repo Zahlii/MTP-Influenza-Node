@@ -155,6 +155,8 @@ function getTileInfo(year,month,day,hour,x,y,z) {
     var dir =  ['/tiles',year,month,day,hour,z,x].join('/'),
         img = base + dir + '/' + y + '.png';
 
+    //console.log(dir,img,base);
+
 
     if(fs.existsSync(img)) {
         return {
@@ -163,8 +165,9 @@ function getTileInfo(year,month,day,hour,x,y,z) {
         };
     } else {
         var parts = dir.split('/');
+        //console.log(parts);
         var pre = '';
-        for(var i=0;i<parts.length-1;i++) {
+        for(var i=1;i<parts.length;i++) {
             pre = pre  + '/' + parts[i];
             var current = base + pre + '/';
             if(fs.existsSync(current))
