@@ -4,7 +4,7 @@
         "port": "8080"
     },
     "MongoDB": {
-        "host": "mongodb:///tmp/mongodb-27016.sock/mtp-influenza",
+        "host": "mongodb://ds019058.mlab.com:19058/influenza_uni-mannheim",
         "options": {
             "server": {
                 "auto_reconnect": true,

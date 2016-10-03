@@ -12,8 +12,8 @@ module.exports.initMongoose = () => {
 
         var h = mongoconfig.host;
 
-        if(os.hostname() != "wifo1-30" && os.hostname() != "vm-debian")
-            h = "mongodb://wifo1-30.bwl.uni-mannheim.de:27016/mtp-influenza";
+        //if(os.hostname() != "wifo1-30" && os.hostname() != "vm-debian")
+        //    h = "mongodb://wifo1-30.bwl.uni-mannheim.de:27016/mtp-influenza";
 
         mongoose.connect(h, mongoconfig.options);
         console.log('Connected to '+h);
