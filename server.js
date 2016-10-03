@@ -1,7 +1,4 @@
 'use strict';
-require('pmx').init({
-    http : true
-});
 
 const restify = require('restify');
 const responseTime = require('response-time');
@@ -54,13 +51,18 @@ server.use((req, res, next) => {
     });
     return next();
 });
+server.on('uncaughtException', function (req, res, route, err, cb) {
+    res.send(500, 'Internal Error')
+    log.APIError('Uncaught Exception', req, err);
+});
+
 //server.use(restify.gzipResponse());
 server.pre(restify.pre.sanitizePath());
 
 
-monogooseInitiator.initMongoose();
-routes(server);
 
+routes(server);
+monogooseInitiator.initMongoose();
 
 
 console.log('Server started.');
