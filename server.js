@@ -60,9 +60,8 @@ server.on('uncaughtException', function (req, res, route, err, cb) {
 server.pre(restify.pre.sanitizePath());
 
 
-
-routes(server);
 monogooseInitiator.initMongoose();
+routes(server);
 
 
 console.log('Server started.');
