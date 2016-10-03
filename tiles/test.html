@@ -48,7 +48,7 @@
         } else if(where === 'PREV') {
             validDate = new Date(validDate.getTime()-step);
         }
-        now.textContent = validDate.toLocaleString();
+        now.textContent = validDate.toUTCString();
         loadOverlay();
     }
     function _(n) {
@@ -58,17 +58,17 @@
         var imageMapType = new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
                 var d = validDate,
-                        year = d.getFullYear(),
-                        month = _(d.getMonth()+1),
-                        day = _(d.getDate()),
-                        hour = d.getHours(),
+                        year = d.getUTCFullYear(),
+                        month = _(d.getUTCMonth()+1),
+                        day = _(d.getUTCDate()),
+                        hour = d.getUTCHours(),
                         hour = _(hour - hour % 6);
 
                 if (zoom < 8 || zoom > 15) {
                     return null;
                 }
 
-                return ['http://mtp-influenza.ddns.net:8080/api1/tiles',
+                return ['http://localhost:8080/api1/tiles',
                             year,month,day,hour,zoom, coord.x, coord.y].join('/')+'.png';
             },
             tileSize: new google.maps.Size(256, 256),

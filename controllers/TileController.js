@@ -108,12 +108,14 @@ function renderTileInternal(dateStart,dateEnd,x,y,z,path,cb,res) {
 
 
         if(err) {
+            console.log(err);
             //log.backgroundError("Failed loading heatmap tile data",err);
             path = base + '/tiles/clear.png';
         } else {
             //console.log('Size: '+data.length);
 
             var l = data.length;
+            console.log(l);
             if (l == 0) {
                 var clear = base + '/tiles/clear.png';
                 var inStr = fs.createReadStream(clear);
