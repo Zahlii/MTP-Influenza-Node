@@ -31,23 +31,30 @@ module.exports.renderTile = (req,res,next) => {
         z = req.params.z,
         y = req.params["y.png"].match(/\d+/)[0];
 
-    var i = getTileInfo(year,month,day,hour,x,y,z);
+	if(dateEnd.getTime() > Date.now()) {
+		var path = base + '/tiles/clear.png';
+		var inStr = fs.createReadStream(path);
 
-    if(!i.exists) {
-        timing.elapsed('Not existing, rendering...');
-        renderTileInternal(dateStart,dateEnd,x,y,z,i.path, () => {
-            timing.elapsed('Sent rendered file to client');
-        },res);
-    } else {
-        timing.elapsed('Sending file to client');
-        var img = fs.createReadStream(i.path);
+		inStr.pipe(res);
+	} else {
+		var i = getTileInfo(year,month,day,hour,x,y,z);
 
-        res.set({'Content-Type': 'image/png','Cache-Control': 'max-age=31556926' });
-        res.statusCode = 200;
-        img.pipe(res);
-        timing.elapsed('Sent file to client');
-        return next();
-    }
+		if(!i.exists) {
+			timing.elapsed('Not existing, rendering...');
+			renderTileInternal(dateStart,dateEnd,x,y,z,i.path, () => {
+				timing.elapsed('Sent rendered file to client');
+			},res);
+		} else {
+			timing.elapsed('Sending file to client');
+			var img = fs.createReadStream(i.path);
+
+			res.set({'Content-Type': 'image/png','Cache-Control': 'max-age=31556926' });
+			res.statusCode = 200;
+			img.pipe(res);
+			timing.elapsed('Sent file to client');
+			return next();
+		}
+	}
 
 };
 
@@ -103,52 +110,54 @@ function renderTileInternal(dateStart,dateEnd,x,y,z,path,cb,res) {
 
     var box = merc.bbox(x,y,z);
 
-    getDataPoints(dateStart,dateEnd,box,(err,data) => {
-        timing.elapsed('Got required data points');
+
+	getDataPoints(dateStart,dateEnd,box,(err,data) => {
+		timing.elapsed('Got required data points');
 
 
-        if(err) {
-            console.log(err);
-            //log.backgroundError("Failed loading heatmap tile data",err);
-            path = base + '/tiles/clear.png';
-        } else {
-            //console.log('Size: '+data.length);
+		if(err) {
+			//console.log(err);
+			//log.backgroundError("Failed loading heatmap tile data",err);
+			path = base + '/tiles/clear.png';
+		} else {
+			//console.log('Size: '+data.length);
 
-            var l = data.length;
-            console.log(l);
-            if (l == 0) {
-                var clear = base + '/tiles/clear.png';
-                var inStr = fs.createReadStream(clear);
-                var outStr = fs.createWriteStream(path);
+			var l = data.length;
+			//console.log(l);
+			if (l == 0) {
+				var clear = base + '/tiles/clear.png';
+				var inStr = fs.createReadStream(clear);
+				var outStr = fs.createWriteStream(path);
 
-                inStr.pipe(res);
-                inStr.pipe(outStr);
-            } else {
-                var heat = heatmap(256, 256, {radius: 20});
-                for (var i = 0; i < l; i++) {
-                    var d = data[i];
+				inStr.pipe(res);
+				inStr.pipe(outStr);
+			} else {
+				var heat = heatmap(256, 256, {radius: 20});
+				for (var i = 0; i < l; i++) {
+					var d = data[i];
 
-                    var fact = 1;//Math.pow(2,(15-z)/2);
-                    var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1], d.geo.coordinates[0]);
-                    heat.addPoint(cx.x, cx.y, {weight: d.healthScore / 100.0 / fact});
-                    //console.log(cx);
-                }
+					var fact = 1;//Math.pow(2,(15-z)/2);
+					var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1], d.geo.coordinates[0]);
+					heat.addPoint(cx.x, cx.y, {weight: d.healthScore / 100.0 / fact});
+					//console.log(cx);
+				}
 
-                timing.elapsed('Starting to draw');
-                heat.draw();
-                timing.elapsed('Streaming data');
-                var source = heat.canvas.createPNGStream();
-                var file = fs.createWriteStream(path);
+				timing.elapsed('Starting to draw');
+				heat.draw();
+				timing.elapsed('Streaming data');
+				var source = heat.canvas.createPNGStream();
+				var file = fs.createWriteStream(path);
 
-                source.pipe(res);
-                source.pipe(file);
-            }
+				source.pipe(res);
+				source.pipe(file);
+			}
 
-        }
+		}
 
-        if(cb)
-            cb();
-    });
+		if(cb)
+			cb();
+	});
+	
 
 
 }

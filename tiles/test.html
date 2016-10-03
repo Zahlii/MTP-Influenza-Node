@@ -43,11 +43,15 @@
         var step = 6*3600*1000;
         var t = validDate.getTime();
         validDate = new Date(t - t % step);
+		
         if(where === 'NEXT') {
-            validDate = new Date(validDate.getTime()+step);
+            var n = new Date(validDate.getTime()+step);
+			if(n.getTime() <= Date.now())
+				validDate = n;
         } else if(where === 'PREV') {
             validDate = new Date(validDate.getTime()-step);
         }
+	
         now.textContent = validDate.toUTCString();
         loadOverlay();
     }
