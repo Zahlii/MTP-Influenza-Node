@@ -78,6 +78,11 @@ const schema = new Schema({
             type: [Number],
             required: false
         }
+    },
+    isSick: {
+            type: Boolean,
+            required: false,
+            default: false
     }
 });
 
@@ -119,5 +124,50 @@ schema.methods.sendPushNotification = function(data,cb) {
         }
     }
 };
+
+schema.methods.setSickFlag = function(flag, cb) {
+    this.model('User').update(
+        {_id : this._id},
+        {$set: {
+            isSick : flag
+        }},
+        {multi: false},
+        cb
+    );
+};
+
+schema.statics.updateLocation = function(userId, lat, lng, cb) {
+    const location = {
+        type:'Point',
+        coordinates: [lng, lat]
+    };
+    this.model('User').update(
+        userId,
+        {$set: {
+            lastLocation : location
+        }},
+        {multi: false},
+        cb
+    );
+};
+
+schema.statics.prepareForNewHealthReport  = function(userId, lat, lng, cb) {
+    const location = {
+        type:'Point',
+        coordinates: [lng, lat]
+    };
+
+    this.model('User').findByIdAndUpdate(
+        userId,
+        {$set: {
+            lastHealthReport : new Date(),
+            lastLocation : location
+        }},
+        {new: true},
+        cb
+    );
+};
+
+
 
 module.exports.Schema = schema;
