@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const HealthReport = mongoose.model('HealthReport');
 const User = mongoose.model('User');
+const Location = mongoose.model('Location');
 const helpers = require('../model/helpers');
 const config = require('config');
 const log = require('../config/log.js');
@@ -18,81 +19,44 @@ module.exports.createHealthReport = (req, res, next) => {
 
 
     const hr = new HealthReport(bdy);
+    hr.issuedOn = new Date()
 
-    User.findById(bdy._user, (err, doc) => {
-        if (err) {
-            log.APIError('Error while searching user by ID',err,req);
-            res.send(500, err);
-            return next()
-        } else if (doc === null) {
-            log.APIError('Unknown user',null,req);
-            res.send(500, new Error('Unknown user ' + bdy._user));
-            return next()
-        } else {
-            var now = new Date();
+    hr.devalidatePrevious((err) => {if (err) log.APIError('Failed to devalidate previous healthreports', err)});
 
-            hr.issuedOn = now;
-            hr.gender = doc.gender;
-            hr.age = helpers.calculateAge(doc.birthDate);
-            hr.healthScore = helpers.calculateHealthScore(bdy);
-
-            doc.lastHealthReport = now;
-            doc.save();
-
-            hr.getPrevious((err, prev) => {
-                var isSick = (hr.healthScore >= config.calc.infectionHealthScoreThreshold);
-
-                if (err) {
-                    log.APIError('Could not get previous health report',err,req);
-                    res.send(500, err);
-                    return next()
-                }
-                else if (prev == null || prev.length == 0) {
-                    // no old health report, so this one is an infection only if it exceeds the threshold
-                    hr.isNewlyInfected = isSick;
-                    hr.save((err) => {
-                        if (err) {
-                            log.APIError('Could not save first health report',err,req);
-                            res.send(500, err);
-                            return next()
-                        }
-                        else {
-                            require('./LocationController').reportLocation(req,res,next,true);
-                        }
-                    });
-                    return next()
-                } else {
-                    prev = prev[0];
-                    // old health report, only count new infection if last one wasn't already sick
-                    hr.isNewlyInfected = !prev.isNewlyInfected && (prev.healthScore < config.calc.infectionHealthScoreThreshold) && isSick ;
-
-                    prev.validTo = now;
-
-                    prev.save((err)=> {
-                        if (err) {
-                            log.APIError('Could not devalidate previous health report',err,req);
-                            res.send(500, err);
-                            return next()
-                        }
-                        else {
-
-                            hr.save((err) => {
-                                if (err) {
-                                    log.APIError('Could not save health report',err,req);
-                                    res.send(500, err);
-                                    return next()
-                                }
-                                else {
-                                    require('./LocationController').reportLocation(req,res,next,true);
-                                }
-                            });
-                        }
-                    });
-                }
-
-            });
+    User.prepareForNewHealthReport(hr._user, bdy.lat, bdy.lng, (err, user) => {
+        if (err || !user){
+            log.APIError('Failed to retrieve user', req,  err);
+            res.send(500);
+            return next();
         }
+        hr.gender = user.gender
+        hr.age = helpers.calculateAge(user.birthDate);
+        hr.healthScore = helpers.calculateHealthScore(bdy);
+        hr.isSick = (hr.healthScore >= config.calc.infectionHealthScoreThreshold)
+        hr.isNewlyInfected = !((!hr.isSick) || user.isSick)
+        if (hr.isSick != user.isSick) user.setSickFlag(hr.isSick, (err) => {if (err) log.APIError('Failed to set sick flag', err)});
+
+        hr.save((err, _hr) => {
+            if (err){
+                log.APIError('Failed to save healthreport', req,  err);
+                res.send(500);
+                return next();
+            }
+            hr._id = _hr
+            const location = new Location()
+            location.geo = {
+                type: 'Point',
+                coordinates: [bdy.lng, bdy.lat]
+            };
+            location.saveHrAligned(hr, (err, _loc) =>{
+                if (err){
+                    log.APIError('Failed to save location', req,  err);
+                    res.send(500);
+                    return next();
+                }
+                res.send(201)
+                return next()
+            });
+        })
     });
-
-
 };

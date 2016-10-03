@@ -1,6 +1,5 @@
-/**
- * Created by sebas on 06.07.2016.
- */
+"use strict";
+
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -49,7 +48,7 @@ schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, d
         ts = ts - 86400*1000,
         dateStart = new Date(ts);
 
-    
+
     return this.model('Location').find(
         {
             geo: {
@@ -68,6 +67,13 @@ schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, d
         cb
     );
 };
+
+schema.methods.saveHrAligned = function (hr, cb) {
+    this._healthReport = hr._id;
+    this.healthScore = hr.healthScore;
+    this.isNewlyInfected = hr.isNew;
+    this.save(cb)
+}
 
 
 module.exports.Schema = schema;
