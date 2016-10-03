@@ -1,7 +1,7 @@
 var convert = require('color-convert');
 
 if (process.argv) {
-    var Canvas = (require)('canvas');
+    var Canvas = (require)('canvas-prebuilt');
 }
 
 function createCanvas (width, height) {
