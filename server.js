@@ -38,11 +38,17 @@ server.use((req, res, next) => {
         var time = isWithCrypt ? 250 : 100;
         if(r > time)
             log.APIError("High response time",null,res.req);
-        
+
         console.log((new Date()).toLocaleString()+"\t"+res.req.method+"\t"+res.req.url+"\t"+r);
     });
     return next();
 });
+
+server.on('uncaughtException', function (req, res, route, err, cb) {
+    res.send(500, 'Internal Error')
+    log.APIError('Uncaught Exception', req, err);
+});
+
 server.use(restify.gzipResponse());
 server.pre(restify.pre.sanitizePath());
 
