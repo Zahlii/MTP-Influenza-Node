@@ -14,28 +14,32 @@ function getGroupedData(bdy,onlyNew) {
         ts = ts - 86400*1000,
         dateStart = new Date(ts);
 
+    var m = {
+        geo: {
+            $geoNear: {
+                $geometry: {
+                    type: "Point",
+                    coordinates: [parseFloat(bdy.lng),parseFloat(bdy.lat)] // LNG, LAT
+                },
+                $minDistance: 0,
+                $maxDistance: parseFloat(bdy.proximity) // PROX
+            }
+        },
+        healthScore: {
+            $gte: config.calc.infectionHealthScoreThreshold // above threshold
+        },
+        isNewlyInfected: true,
+        timestamp: {
+            $gte: dateStart,
+            $lte: dateEnd
+        }
+    };
+
+    if(!onlyNew)
+        delete m.isNewlyInfected;
 
     return Location.aggregate([{
-        $match: {
-            geo: {
-                $geoNear: {
-                    $geometry: {
-                        type: "Point",
-                        coordinates: [parseFloat(bdy.lng),parseFloat(bdy.lat)] // LNG, LAT
-                    },
-                    $minDistance: 0,
-                    $maxDistance: 60000 // PROX
-                }
-            },
-            healthScore: {
-                $gte: config.calc.infectionHealthScoreThreshold // above threshold
-            },
-            isNewlyInfected: onlyNew,
-            timestamp: {
-                $gte: dateStart,
-                $lte: dateEnd
-            }
-        }
+        $match: m
     }, {
         $group: {
             _id: "$_user"
