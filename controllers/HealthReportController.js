@@ -19,6 +19,7 @@ module.exports.createHealthReport = (req, res, next) => {
         delete bdy.validTo;
     }
 
+    //console.log(bdy);
 
     const hr = new HealthReport(bdy);
     hr.issuedOn = new Date()
@@ -56,7 +57,7 @@ module.exports.createHealthReport = (req, res, next) => {
                     res.send(500);
                     return next();
                 }
-                res.send(201)
+                res.send(201,hr)
                 return next()
             });
         })

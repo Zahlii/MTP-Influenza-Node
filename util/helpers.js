@@ -13,11 +13,13 @@ module.exports = {
         return age;
     },
     calculateHealthScore:(data) => {
+        //.log('Hallo');
+        //console.log(data);
 		// smiley 1-5 (1 = richtig scheisse, 5 = perfekt)
 		// symptome sind 0/1 (ja nein)
 		// healthscore ist 0 - 100 (gesund bis komplett krank)
         var w = {
-            isSick:0,
+            isSick:0.2,
             hasHeadache:0.4,
             hasRunningNose:0.2,
             hasSoreThroat:0.3,
@@ -33,7 +35,7 @@ module.exports = {
             sumW = 0.0;
         for(var p in w) {
             if(w.hasOwnProperty(p)) {
-                data[p] = (data[p] || data[p] === 'true');
+                data[p] = (data[p] === true || data[p] === 'true' || data[p] === 'True' || data[p] === 1);
                 var c = w[p];
                 sumW += c;
                 sum += data[p] ? c : 0.0;
