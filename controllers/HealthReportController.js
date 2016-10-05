@@ -106,14 +106,14 @@ module.exports.createHealthReport = (req, res, next) => {
     then(loc => {
         timing.elapsed('Inserted new location');
         res.send(201,newHR);
-        return next();
     }).
     catch(err => {
         // Something went wrong during update
         log.APIError('Couldn\'t save healthstate',err,req);
         res.send(500,err);
+    }).finally(() => {
         return next();
-    });
+    })
 
 
 

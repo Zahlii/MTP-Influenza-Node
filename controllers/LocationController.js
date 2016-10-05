@@ -65,14 +65,14 @@ module.exports.reportLocation = (req,res,next) => {
     }).
     then(loc => {
         res.send(201,loc);
-        return next();
     }).
     catch(err => {
         // Something went wrong during update
         log.APIError('Couldn\'t update location',err,req);
         res.send(500,err);
+    }).finally(() => {
         return next();
-    });
+    })
 
 };
 

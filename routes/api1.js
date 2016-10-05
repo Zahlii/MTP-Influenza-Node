@@ -48,7 +48,13 @@ module.exports = (server) => {
 
     api1router.put('/kpi/new_infections', (req, res, next) => {
         require('../controllers/KPIController')
-            .getNewInfectionsAroundUserAtDate(req, res, next)
+            .getNewInfectionsAroundPositionAtDate(req, res, next)
+        return next();
+    });
+
+    api1router.put('/kpi/total_infections', (req, res, next) => {
+        require('../controllers/KPIController')
+            .getTotalInfectionsAroundPositionAtDate(req, res, next)
         return next();
     });
 
