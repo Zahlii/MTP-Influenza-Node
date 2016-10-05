@@ -8,58 +8,113 @@ const config = require('config');
 const log = require('../util/log.js');
 const timing = require('../util/timing.js');
 
+function UpdateUserLastHealthReport(id, now) {
+    return User.findByIdAndUpdate(id, {
+        $set: {
+            'lastHealthReport': now
+        }
+    }, {new: true}).exec();
+}
+
+function GetAndInvalidateOldHealthReport(user, now) {
+    return HealthReport.findOneAndUpdate(
+        {
+            _user:user._id,
+            validTo: {
+                $gt: now
+            }
+        },
+        {
+            $set: {
+                validTo: now
+            }
+        }, {new: true}).exec();
+}
+
+function InsertNewHealthReport(bdy, currentUser,oldHR,now) {
+
+
+    bdy.issuedOn = now;
+    bdy.validTo = +now + config.calc.defaultValidityDays*24*60*60*1000;
+    bdy.gender = currentUser.gender;
+    bdy.age = helpers.calculateAge(currentUser.birthDate);
+    bdy.healthScore = helpers.calculateHealthScore(bdy);
+
+
+
+    var t = config.calc.infectionHealthScoreThreshold;
+    var isSickScore = bdy.healthScore >= t;
+
+    if(oldHR != null) {
+        // we have a relatively new HR, so it's only a new infection if the user wasn't sick then but is now
+        bdy.isNewlyInfected = isSickScore && !oldHR.healthScore >= t;
+    } else {
+        bdy.isNewlyInfected = isSickScore;
+    }
+
+    var newHR = new HealthReport(bdy);
+
+    return newHR.save();
+}
+
+function InsertLocationUpdate(bdy,currentUser,newHR,now) {
+    var d = {
+        timestamp: now,
+        geo: {
+            type: 'Point',
+            coordinates: [bdy.lng, bdy.lat]
+        },
+        isNewlyInfected: newHR.isNewlyInfected,
+        healthScore: newHR.healthScore,
+        _healthReport: newHR._id,
+        _user: currentUser._id
+    };
+
+    return new Location(d).save();
+}
+
 module.exports.createHealthReport = (req, res, next) => {
     timing.start(req);
     const bdy = req.body;
 
-    if (bdy.issuedOn) {
-        delete bdy.issuedOn;
-    }
-    if (bdy.validTo) {
-        delete bdy.validTo;
-    }
+    var n = new Date();
 
-    //console.log(bdy);
 
-    const hr = new HealthReport(bdy);
-    hr.issuedOn = new Date()
+    var currentUser;
+    var oldHR;
+    var newHR;
 
-    hr.devalidatePrevious((err) => {if (err) log.APIError('Failed to devalidate previous healthreports', err)});
+    UpdateUserLastHealthReport(bdy._user, n).then(newUser => {
+        timing.elapsed('Updated lastHealthReport of user');
 
-    User.prepareForNewHealthReport(hr._user, bdy.lat, bdy.lng, (err, user) => {
-        if (err || !user){
-            log.APIError('Failed to retrieve user', req,  err);
-            res.send(500);
-            return next();
-        }
-        hr.gender = user.gender
-        hr.age = helpers.calculateAge(user.birthDate);
-        hr.healthScore = helpers.calculateHealthScore(bdy);
-        hr.isSick = (hr.healthScore >= config.calc.infectionHealthScoreThreshold)
-        hr.isNewlyInfected = !((!hr.isSick) || user.isSick)
-        if (hr.isSick != user.isSick) user.setSickFlag(hr.isSick, (err) => {if (err) log.APIError('Failed to set sick flag', err)});
+        if(!newUser)
+            throw new Error('Unknown user');
+        currentUser = newUser;
 
-        hr.save((err, _hr) => {
-            if (err){
-                log.APIError('Failed to save healthreport', req,  err);
-                res.send(500);
-                return next();
-            }
-            hr._id = _hr
-            const location = new Location()
-            location.geo = {
-                type: 'Point',
-                coordinates: [bdy.lng, bdy.lat]
-            };
-            location.saveHrAligned(hr, (err, _loc) =>{
-                if (err){
-                    log.APIError('Failed to save location', req,  err);
-                    res.send(500);
-                    return next();
-                }
-                res.send(201,hr)
-                return next()
-            });
-        })
+        return GetAndInvalidateOldHealthReport(newUser, n);
+    }).
+    then(hr => {
+        timing.elapsed('Invalidated and fetched old HR');
+        oldHR = hr;
+        return InsertNewHealthReport(bdy,currentUser,oldHR,n);
+    }).
+    then(hr => {
+        timing.elapsed('Saved new HR');
+        newHR = hr;
+        return InsertLocationUpdate(bdy,currentUser,newHR,n);
+    }).
+    then(loc => {
+        timing.elapsed('Inserted new location');
+        res.send(201,newHR);
+        return next();
+    }).
+    catch(err => {
+        // Something went wrong during update
+        log.APIError('Couldn\'t save healthstate',err,req);
+        res.send(500,err);
+        return next();
     });
+
+
+
 };

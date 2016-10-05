@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const mongoconfig = config.get('MongoDB');
 const mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 
 let initialized = false;
 
@@ -27,6 +28,6 @@ module.exports.initMongoose = () => {
             }
 
         });
-    initialized = true
+        initialized = true
     }
 };

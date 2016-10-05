@@ -6,7 +6,7 @@ client.APIError = function(message,err,info) {
     //console.log(req);
     var msg = err && err.message ? message + " | " + err.message : message;
 
-    console.log(msg);
+    console.error(msg);
 
     if(info && info.body && info.body._user) {
         this.setUserContext({
@@ -32,7 +32,7 @@ client.backgroundError = function(message,err) {
     //console.log(req);
     var msg = err && err.message ? message + " | " + err.message : message;
 
-    console.log(msg);
+    console.error(msg);
     this.captureException(new Error(msg),{
         tags:{
             App:'NODE_BACKGROUND'

@@ -150,7 +150,7 @@ module.exports.authUserByFB = (req, res, next) => {
                     const u = new User(bdy);
                     u.deviceTokens.push(bdy.deviceToken);
                     u.lastHealthReport = null;
-                    u.lastPushNotification = null;
+                    u.lastHealthstateReminder = null;
                     u.save((err) => {
                         if (err) {
                             log.APIError('Error while saving new FB user',err,req);

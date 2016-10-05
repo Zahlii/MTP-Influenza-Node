@@ -3,6 +3,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const config  = require('config');
 
 
 const schema = new Schema({
@@ -36,46 +37,62 @@ const schema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'HealthReport'
+    },
+    _user: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     }
 });
 
 schema.index({'healthScore':1});
 schema.index({'timestamp':1});
 schema.index({'geo': '2dsphere'});
+schema.index({'_user':1});
+schema.index({'_healthReport':1});
 
 schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, dateEnd, cb, par) {
     var ts = dateEnd.getTime(),
         ts = ts - 86400*1000,
         dateStart = new Date(ts);
 
-    const params = par || '-_id -_healthReport -__v -geo.type';
-
-
-    return this.model('Location').find(
-        {
-            geo: {
-                $nearSphere : {
-                    $geometry: { type: "Point",  coordinates: [lng,lat] },
-                    $minDistance: 0,
-                    $maxDistance: proximity
+    return this.model('Location').aggregate([{
+            $match: {
+                geo: {
+                    $geoNear: {
+                        $geometry: {
+                            type: "Point",
+                            coordinates: [lng,lat] // LNG, LAT
+                        },
+                        $minDistance: 0,
+                        $maxDistance: proximity // PROX
+                    }
+                },
+                healthScore: {
+                    $gte: config.calc.infectionHealthScoreThreshold  // above threshold
+                },
+                timestamp: {
+                    $gte: dateStart,
+                    $lte: dateEnd
                 }
-            },
-            timestamp: {
-                $gte: dateStart,
-                $lte: dateEnd
             }
-        },
-        params,
+        }, {
+            $sort: {
+                timestamp: -1 // DESC
+            }
+        }, {
+            $group: {
+                _id: "$_user", // $_user nachher
+                geo: {
+                    $last: "$geo" // newest location
+                },
+                healthScore: {
+                    $avg: "$healthScore" // average healthscore in the time
+                }
+            }
+        }],
         cb
     );
 };
-
-schema.methods.saveHrAligned = function (hr, cb) {
-    this._healthReport = hr._id;
-    this.healthScore = hr.healthScore;
-    this.isNewlyInfected = hr.isNew;
-    this.save(cb)
-};
-
 
 module.exports.Schema = schema;

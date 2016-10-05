@@ -52,8 +52,9 @@ server.use((req, res, next) => {
     return next();
 });
 server.on('uncaughtException', function (req, res, route, err, cb) {
-    res.send(500, 'Internal Error')
-    log.APIError('Uncaught Exception', req, err);
+    console.error(err);
+    //res.send(500, 'Internal Error')
+    //log.APIError('Uncaught Exception', req, err);
 });
 
 //server.use(restify.gzipResponse());

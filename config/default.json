@@ -4,7 +4,7 @@
         "port": "8080"
     },
     "MongoDB": {
-        "host": "mongodb://ds019058.mlab.com:19058/influenza_uni-mannheim",
+        "host": "mongodb://localhost:27016/mtp-influenza",
         "options": {
             "server": {
                 "auto_reconnect": true,
@@ -21,7 +21,8 @@
         "infectionHealthScoreThreshold":40,
         "sendNotificationOnHealthReportAge":86400,
         "warningTimeInterval":86400,
-        "minNewInfectionsForWarning":2
+        "minNewInfectionsForWarning":2,
+        "defaultValidityDays":2
     },
     "SLA": {
         "maxTime":150,

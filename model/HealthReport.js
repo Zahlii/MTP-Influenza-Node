@@ -5,6 +5,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const config  = require('config');
 
 const schema = new Schema({
     _user: {
@@ -40,8 +41,8 @@ const schema = new Schema({
     },
     validTo: {
         type: Date,
-        default: null,
-        max: Date.now
+        default:  function(){return +new Date() + config.calc.defaultValidityDays*24*60*60*1000},
+        required: true,
     },
     hasHeadache: {
         type: Boolean,
@@ -80,28 +81,12 @@ const schema = new Schema({
     }
 });
 
+
 schema.index({'validTo':1});
+schema.index({'issuedOn':1});
 schema.index({'healthScore':1});
 schema.index({'_user':1});
-schema.index({'issuedOn':1});
-
-schema.methods.getPrevious = function(cb) {
-    return this.model('HealthReport').getLastFromUser(this._user,cb);
-};
-
-schema.methods.devalidatePrevious = function(cb) {
-    this.model('HealthReport').update(
-        {_user : this._user, validTo : null},
-        { $set: { validTo: new Date()}},
-        {multi: true},
-        cb
-    );
-};
-
-schema.statics.getLastFromUser = function(_user,cb) {
-    return this.model('HealthReport').find({_user : _user, validTo : null},cb);
-};
-
+schema.index({'isNewlyInfected':1});
 
 
 module.exports.Schema = schema;

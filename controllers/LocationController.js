@@ -9,12 +9,43 @@ const User = mongoose.model('User');
 const log = require('../util/log.js');
 const timing = require('../util/timing.js');
 
-module.exports.reportLocation = (req, res, next, isNew, lastHR) => {
-    timing.start(req);
+function GetLastHealthReport(user, now) {
+    return HealthReport.findOne(
+        {
+            _user:user,
+            validTo: {
+                $gt: now
+            }
+        }).exec();
+}
+
+module.exports.getLocationsByProximityAndDate = (req, res, next) => {
     const bdy = req.body;
-    if (bdy.timestamp) {
-        delete bdy.timestamp
-    }
+	timing.start(req);
+    Location.getLocationsByProximityAndDate(parseFloat(bdy.lat), parseFloat(bdy.lng),
+        parseFloat(bdy.proximity), new Date(bdy.date), (err, locations) => {
+			timing.elapsed('Got location response from DB');
+            if (err) {
+                log.APIError('Error while querying location data',err,req);
+                res.send(500, err);
+            }
+            else {
+                res.send(200, locations);
+				timing.elapsed('Finished sending location response');
+            }
+            //global.gc();
+            //timing.elapsed('Ran GC');
+            return next();
+        });
+};
+
+module.exports.reportLocation = (req,res,next) => {
+    timing.start(req);
+
+    const bdy = req.body;
+    var n = new Date();
+
+    bdy.timestamp = n;
     bdy.geo = {
         type:'Point',
         coordinates: [bdy.lng, bdy.lat]
@@ -22,77 +53,26 @@ module.exports.reportLocation = (req, res, next, isNew, lastHR) => {
     delete bdy.lng;
     delete bdy.lat;
 
+    GetLastHealthReport(bdy._user,n).then(hr => {
+        if(!hr)
+            throw new Error('Couldn\'t find user or no valid health report');
 
-    const location = new Location(bdy);
-    timing.elapsed('Created Location');
+        bdy._healthReport = hr._id;
+        bdy.isNewlyInfected = hr.isNewlyInfected;
+        bdy.healthScore = hr.healthScore;
+        var l = new Location(bdy);
+        return l.save();
+    }).
+    then(loc => {
+        res.send(201,loc);
+        return next();
+    }).
+    catch(err => {
+        // Something went wrong during update
+        log.APIError('Couldn\'t update location',err,req);
+        res.send(500,err);
+        return next();
+    });
 
-    function cb(err, doc) {
-        timing.elapsed('Got last HR from user');
-        if (err) {
-            log.APIError('Error while searching last health report from user',err,req);
-            res.send(500, err);
-            return next()
-        } else if (doc == null || doc.length == 0) {
-            log.APIError('Unknown user or trying to send location without valid HealthState',null,req);
-            res.send(500, new Error('Unknown user ' + bdy._user+' or trying to send location without valid HealthState'));
-            return next()
-        } else {
-            doc = doc[0];
-            location._healthReport = doc._id;
-            location.healthScore = doc.healthScore;
-            location.isNewlyInfected = isNew;
-
-            User.update({_id:bdy._user},{
-                $set:{
-                    lastLocation: bdy.geo
-                }
-            },(err) => {
-                timing.elapsed('Updated lastLocation');
-                if (err) {
-                    res.send(500, err);
-                    log.APIError('Error while updating user\'s last location',err,req);
-                }
-                else {
-                    location.save((err) => {
-                        timing.elapsed('Saved new Location');
-                        if (err) {
-                            res.send(500, err);
-                            log.APIError('Error while saving new location',err,req);
-                        }
-                        else res.send(201, location);
-                        return next()
-                    })
-                }
-            });
-        }
-    }
-    // cache lastHR from /healthstate endpoint
-    if(lastHR) {
-        cb(null,[lastHR]);
-    } else {
-        HealthReport.getLastFromUser(bdy._user, cb);
-    }
-};
-
-module.exports.getLocationsByProximityAndDate = (req, res, next) => {
-    const bdy = req.body;
-	timing.start(req);
-    Location.getLocationsByProximityAndDate(bdy.lat, bdy.lng,
-        bdy.proximity, new Date(bdy.date), (err, locations) => {
-			timing.elapsed('Got location response from DB');
-            if (err) {
-                log.APIError('Error while querying location data',err,req);
-                res.send(500, err);
-            }
-            else {
-                // TODO klären ob hier Umformatierung des Geo-Attributes notwendig ist und ggfs vornehmen.
-                res.send(200, locations);
-                locations = null;
-				timing.elapsed('Finished sending location response');
-            }
-            global.gc();
-            timing.elapsed('Ran GC');
-            return next();
-        });
 };
 

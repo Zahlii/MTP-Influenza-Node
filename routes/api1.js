@@ -30,7 +30,7 @@ module.exports = (server) => {
 
     api1router.put('/location/report', (req, res, next) => {
         require('../controllers/LocationController')
-            .reportLocation(req, res, next, false)
+            .reportLocation(req, res, next)
         return next();
     });
 
