@@ -118,12 +118,13 @@ schema.methods.sendPushNotification = function(data,cb) {
    // this.lastPushNotification = Date.now();
    // this.save();
     if(todo==0) {
-        cb(null, {"status":"ok","deviceTokens":0});
+        if(cb && typeof cb == 'function')
+            cb(null, {"status":"ok","deviceTokens":0});
     } else {
         for (var i = 0; i < todo; i++) {
             pushAgent.sendPushNotification(this.deviceTokens[i], data, (err) => {
                 if (++completed >= todo) {
-                    if(cb)
+                    if(cb && typeof cb == 'function')
                         cb(err, {"status":"ok","deviceTokens":todo});
                 }
             })
