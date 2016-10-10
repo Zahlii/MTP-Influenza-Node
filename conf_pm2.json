@@ -2,27 +2,27 @@
   "apps" : [{
     	"name"        : "server",
     	"node_args"	: "--expose-gc",
-		"script"      	: "/home/influenza/src/MTP-Influenza-Node/server.js",
+		"script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/server.js",
     	"watch"       	: false,
-    	"instances"   	: 8,
+    	"instances"   	: 4,
     	"exec_mode"   	: "cluster",
-    	"cwd"		: "/home/influenza/src/MTP-Influenza-Node/"
+    	"cwd"		: "/home/tp-influenca/src/MTP-Influenza-Node/"
   },{
     	"name"        : "background",
     	"node_args"	: "",
-		"script"      	: "/home/influenza/src/MTP-Influenza-Node/background.js",
+		"script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/background.js",
     	"watch"       	: false,
     	"instances"   	: 1,
     	"exec_mode"   	: "fork",
-    	"cwd"		: "/home/influenza/src/MTP-Influenza-Node/"
+    	"cwd"		: "/home/tp-influenca/src/MTP-Influenza-Node/"
   },{
 	  "name"        : "data_gen",
 	  "node_args"	: "",
-	  "script"      	: "/home/influenza/src/MTP-Influenza-Node/data_gen.js",
+	  "script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/data_gen.js",
 	  "watch"       	: false,
 	  "instances"   	: 1,
 	  "exec_mode"   	: "fork",
-	  "cwd"		: "/home/influenza/src/MTP-Influenza-Node/"
+	  "cwd"		: "/home/tp-influenca/src/MTP-Influenza-Node/"
   }]
 }
 
