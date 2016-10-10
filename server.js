@@ -11,7 +11,11 @@ const fs = require('fs');
 const os  = require('os');
 const onFinished = require('on-finished');
 
-console.log(process.cwd());
+require('pmx').init({
+    http : true
+});
+
+console.log('CWD is: ' + process.cwd());
 
 var settings = {
     name : config.get('Server.name')|| 'MTP'
