@@ -39,10 +39,13 @@ function stats(req,res,next) {
     //getStats(User,'')
     getStats(Location,'timestamp',(err,l) => {
         getStats(HealthReport,'issuedOn',(err,hr) => {
-            res.send(200,{
-                Location:l,
-                HealthReport:hr
-            });
+			getStats(User,'registeredOn',(err,u) => {
+				res.send(200,{
+					Location:l,
+					HealthReport:hr,
+					User:u
+				});
+			});
         });
     });
 }
