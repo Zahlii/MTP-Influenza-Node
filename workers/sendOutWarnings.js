@@ -41,11 +41,12 @@ module.exports = function(input, done) {
                     if(!u.lastLocation || u.lastLocation.coordinates.length<2)
                         continue;
 
-                    var c = u.lastLocation.coordinates;
+
                     console.log('Checking for warning for '+u._id);
 
                     (function(user) {
-                        Location.getLocationsByProximityAndDate(c[1],c[0],u.settings.warnRadius*1000,now,'-_id -_healthReport -__v -geo.type',(err,locations) => {
+                        var c = user.lastLocation.coordinates;
+                        Location.getLocationsByProximityAndDate(c[1],c[0],u.settings.warnRadius*1000,now,(err,locations) => {
                             if(err) {
                                 log.backgroundError("Failed getting locations around user", err);
                             } else {

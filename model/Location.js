@@ -51,7 +51,7 @@ schema.index({'geo': '2dsphere'});
 schema.index({'_user':1});
 schema.index({'_healthReport':1});
 
-schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, dateEnd, cb, par) {
+schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, dateEnd, cb) {
     var ts = dateEnd.getTime(),
         ts = ts - 86400*1000,
         dateStart = new Date(ts);
