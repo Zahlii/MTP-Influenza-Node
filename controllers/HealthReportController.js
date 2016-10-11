@@ -12,9 +12,9 @@ function UpdateUserLastHealthReport(bdy,now) {
     return User.findByIdAndUpdate(bdy._user, {
         $set: {
             'lastHealthReport': now,
-            'geo': {
+            'lastLocation': {
                 type: 'Point',
-                coordinates: [bdy.lng, bdy.lat]
+                coordinates: [parseFloat(bdy.lng), parseFloat(bdy.lat)]
             },
         }
     }, {new: true}).exec();
