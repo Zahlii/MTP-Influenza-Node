@@ -8,10 +8,14 @@ const config = require('config');
 const log = require('../util/log.js');
 const timing = require('../util/timing.js');
 
-function UpdateUserLastHealthReport(id, now) {
-    return User.findByIdAndUpdate(id, {
+function UpdateUserLastHealthReport(bdy,now) {
+    return User.findByIdAndUpdate(bdy._user, {
         $set: {
-            'lastHealthReport': now
+            'lastHealthReport': now,
+            'geo': {
+                type: 'Point',
+                coordinates: [bdy.lng, bdy.lat]
+            },
         }
     }, {new: true}).exec();
 }
@@ -84,7 +88,7 @@ module.exports.createHealthReport = (req, res, next) => {
     var oldHR;
     var newHR;
 
-    UpdateUserLastHealthReport(bdy._user, n).then(newUser => {
+    UpdateUserLastHealthReport(bdy,n).then(newUser => {
         timing.elapsed('Updated lastHealthReport of user');
 
         if(!newUser)

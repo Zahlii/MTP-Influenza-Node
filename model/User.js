@@ -74,7 +74,17 @@ const schema = new Schema({
             min: 5,
             default: 60
         }
-    }
+    },
+    lastLocation: {
+        type: {
+            type: String,
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
 });
 
 schema.index({'lastHealthReport':1});
@@ -82,6 +92,7 @@ schema.index({'lastHealthstateReminder':1});
 schema.index({'lastWarningMessage':1});
 schema.index({'fbUserId':1});
 schema.index({'mail':1});
+schema.index({'lastLocation': '2dsphere'});
 
 schema.statics.getUserByFbId = function(fbId, cb) {
     return this.find({ fbUserId: fbId }, cb);
