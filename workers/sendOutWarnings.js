@@ -44,6 +44,11 @@ module.exports = function(input, done) {
 
                     console.log('Checking for warning for '+u._id);
 
+                    if(u.deviceTokens.length==0 || u.deviceTokens[0].length < 10) {
+                        console.log('Skipping, invalid device token...');
+                        continue;
+                    }
+
                     (function(user) {
                         var c = user.lastLocation.coordinates;
                         Location.getLocationsByProximityAndDate(c[1],c[0],u.settings.warnRadius*1000,now,(err,locations) => {
