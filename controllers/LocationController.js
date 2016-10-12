@@ -30,7 +30,7 @@ module.exports.getLocationsByProximityAndDate = (req, res, next) => {
                 res.send(500, err);
             }
             else {
-                res.send(200, locations);
+                res.send(201, locations);
 				timing.elapsed('Finished sending location response');
             }
             //global.gc();
