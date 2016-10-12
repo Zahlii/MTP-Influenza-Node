@@ -15,7 +15,7 @@ module.exports = {
     calculateHealthScore:(data) => {
         //.log('Hallo');
         //console.log(data);
-		// smiley 1-5 (1 = richtig scheisse, 5 = perfekt)
+		// smiley 1-5 (5 = richtig scheisse, 1 = perfekt)
 		// symptome sind 0/1 (ja nein)
 		// healthscore ist 0 - 100 (gesund bis komplett krank)
         var w = {
@@ -47,9 +47,9 @@ module.exports = {
 
 
 		// berechne den multiplikator ausgehend von den smileys
-		var mult = (1-(data.smileyRating-1)/5.0);
-		// smiley = 1 -> mult = 1
-		// smiley = 5 -> mult = 1-4/5 = 0.2
+		var mult = (1-(5-data.smileyRating)/5.0);
+		// smiley = 5 -> mult = 1 = 1-0/5 = 1-(5-n)/5
+		// smiley = 1 -> mult = 1-4/5 = 1-(5-n)/5 0.2
         //console.log(sympt,mult);
 		return mult*sympt;
 
