@@ -55,7 +55,7 @@ module.exports = function(input, done) {
                     console.log('Sending out healthstate reminder to '+u._id);
                     u.lastHealthstateReminder = new Date();
                     u.save();
-                    u.sendPushNotification({message:"Your last health report was quite some time ago. Please consider sending a new one."});
+                    u.sendPushNotification({message:"Your last health report was quite some time ago. Please consider sending a new one - you won't get precise warnings for your area otherwise!"});
                 }
             }
         });

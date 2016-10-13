@@ -84,7 +84,7 @@ schema.statics.getLocationsByProximityAndDate = function (lat, lng, proximity, d
             $group: {
                 _id: "$_user", // $_user nachher
                 geo: {
-                    $last: "$geo" // newest location
+                    $first: "$geo" // newest location
                 },
                 healthScore: {
                     $avg: "$healthScore" // average healthscore in the time
