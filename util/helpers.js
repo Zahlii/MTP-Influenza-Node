@@ -47,7 +47,7 @@ module.exports = {
 
 
 		// berechne den multiplikator ausgehend von den smileys
-		var mult = (1-(5-data.smileyRating)/5.0);
+		var mult = data.smileyRating/5.0;
 		// smiley = 5 -> mult = 1 = 1-0/5 = 1-(5-n)/5
 		// smiley = 1 -> mult = 1-4/5 = 1-(5-n)/5 0.2
         //console.log(sympt,mult);
