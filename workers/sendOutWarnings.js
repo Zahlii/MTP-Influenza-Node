@@ -12,6 +12,7 @@ const HealthReport = mongoose.model('HealthReport');
 const Location = mongoose.model('Location');
 const config  = require('config');
 const log = require('../util/log.js');
+const locales = require('../util/locales');
 
 module.exports = function(input, done) {
     scheduleEvery(600,function() {
@@ -60,7 +61,8 @@ module.exports = function(input, done) {
                                 if(n >= config.calc.minNewInfectionsForWarning) {
                                     user.lastWarningMessage = new Date();
                                     user.save();
-                                    user.sendPushNotification({message:"Flu alert! Today there were " + n +" new flu infections in your warning area."});
+                                    locales.setLocale(user.settings.locale);
+                                    user.sendPushNotification({message:locales.__("PUSH_ALERT_FLU",n)});
                                 }
                             }
                         });

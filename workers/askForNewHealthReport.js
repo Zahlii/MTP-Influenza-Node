@@ -11,6 +11,7 @@ const User = mongoose.model('User');
 const HealthReport = mongoose.model('HealthReport');
 const config  = require('config');
 const log = require('../util/log.js');
+const locales = require('../util/locales');
 
 module.exports = function(input, done) {
     scheduleEvery(600,function() {
@@ -55,7 +56,8 @@ module.exports = function(input, done) {
                     console.log('Sending out healthstate reminder to '+u._id);
                     u.lastHealthstateReminder = new Date();
                     u.save();
-                    u.sendPushNotification({message:"Your last health report was quite some time ago. Please consider sending a new one - you won't get precise warnings for your area otherwise!"});
+                    locales.setLocale(u.settings.locale);
+                    u.sendPushNotification({message:locales.__("PUSH_REMINDER_HEALTHSTATE")});
                 }
             }
         });

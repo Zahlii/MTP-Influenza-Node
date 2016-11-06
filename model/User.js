@@ -73,6 +73,11 @@ const schema = new Schema({
             type: Number,
             min: 5,
             default: 60
+        },
+        locale: {
+            type: String,
+            required: true,
+            default: "en"
         }
     },
     lastLocation: {
