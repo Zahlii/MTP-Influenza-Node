@@ -33,7 +33,10 @@ module.exports.registerUser = (req,res, next) => {
             type:'Point',
             coordinates:[0,0]
         };
+        bdy.settings = {};
+        bdy.settings.locale = bdy.locale;
 
+        delete bdy.locale;
         delete bdy.password;
         delete bdy.deviceToken;
 
@@ -133,6 +136,10 @@ module.exports.authUserByFB = (req, res, next) => {
             bdy.fbUserId = fbres.id;
             bdy.firstName = fbres.first_name;
             bdy.lastName = fbres.last_name;
+            bdy.settings = {};
+            bdy.settings.locale = bdy.locale;
+
+            delete bdy.locale;
             bdy.gender = fbres.gender === 'male' ? 'm' : 'f';
             bdy.lastLocation = {
                 type:'Point',
