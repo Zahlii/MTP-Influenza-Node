@@ -1,0 +1,31 @@
+{
+    "Server": {
+        "name": "MTP",
+        "port": "8080"
+    },
+    "MongoDB": {
+        "host": "mongodb://wifo1-30.bwl.uni-mannheim.de:27016/mtp-influenza",
+        "options": {
+            "server": {
+                "auto_reconnect": true,
+                "poolSize": 40
+            },
+            "user": "mtp-influenza",
+            "pass": "JonSnowIsAlive"
+        }
+    },
+    "APN": {
+        "passphrase":"influenza2016"
+    },
+    "calc": {
+        "infectionHealthScoreThreshold":40,
+        "sendNotificationOnHealthReportAge":86400,
+        "warningTimeInterval":86400,
+        "minNewInfectionsForWarning":2,
+        "defaultValidityDays":2
+    },
+    "SLA": {
+        "maxTime":150,
+        "maxTimeBCrypt":400
+    }
+}
