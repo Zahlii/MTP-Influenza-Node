@@ -3,6 +3,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const pushAgent = require('./../util/push');
+const log = require('../util/log.js');
+const locales = require('../util/locales');
+
 
 const schema = new Schema({
     mail: {
@@ -103,22 +106,55 @@ schema.statics.getUserByFbId = function(fbId, cb) {
     return this.find({ fbUserId: fbId }, cb);
 };
 
-schema.methods.sendPushNotification = function(data,cb) {
-    var completed = 0;
-    var todo = this.deviceTokens.length;
+schema.statics.getWarningPushUser = function (lastWarningThreshold, cb) {
+    return this.find(
+        {
+            $or: [
+                {lastWarningMessage: {$lt: lastWarningThreshold}},
+                {lastWarningMessage: null}
+            ],
+            $and : [
+                {deviceTokens : {$exists:true}},
+                {$where : 'this.deviceTokens.length > 0'},
+                {lastLocation : {$exists:true}},
+                {$where : 'this.lastLocation.coordinates.length = 2'}
+            ]
+        }, cb)
+}
 
-    if(todo==0) {
-        cb(null, {"status":"ok","deviceTokens":0});
-    } else {
-        for (var i = 0; i < todo; i++) {
-            pushAgent.sendPushNotification(this.deviceTokens[i], data, (err) => {
-                if (++completed >= todo) {
-                    if(cb)
-                        cb(err, {"status":"ok","deviceTokens":todo});
-                }
-            })
-        }
+schema.methods.sendPushNotification = function (data, cb) {
+    var completed = 0;
+    var deviceTokens_length = this.deviceTokens.length;
+    const push_errors = [];
+
+    for (var i = 0; i < deviceTokens_length; i++) {
+        let currentToken = this.deviceTokens[i];
+        pushAgent.sendPushNotification(currentToken, data, (err) => {
+            push_errors.push(err);
+            if (++completed >= deviceTokens_length) {
+                if (cb)
+                    cb(push_errors, {"status": "ok", "deviceTokens": deviceTokens_length});
+            }
+        })
     }
+};
+
+schema.methods.sendPushWarning = function (cb) {
+    let user_location = this.lastLocation.coordinates;
+    this.model('Location').getLocationsByProximityAndDate(user_location[1], user_location[0], this.settings.warnRadius*1000, now, (err,locations) => {
+        if(err) {
+            log.backgroundError("Failed getting locations around user", err);
+        } else {
+            var location_length = locations.length;
+            console.log('Got ' + location_length +' flu cases around '+ user._id);
+            if(location_length >= config.calc.minNewInfectionsForWarning) {
+                this.lastWarningMessage = new Date();
+                this.save();
+                locales.setLocale(this.settings.locale);
+                this.sendPushNotification({message:locales.__("PUSH_ALERT_FLU",location_length)}, cb);
+            }
+        }
+    });
 };
 
 module.exports.Schema = schema;
