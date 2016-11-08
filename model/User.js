@@ -134,7 +134,9 @@ schema.statics.getForAskNewHealthReportUser = function (askForNewHealthReportThr
             {$or: [
                     {lastHealthstateReminder: {$lt: askForNewHealthReportThreshold}},
                     {lastHealthstateReminder: null}
-            ]}
+            ]},
+            {deviceTokens : {$exists:true}},
+            {$where : 'this.deviceTokens.length > 0'}
         ]
     }, cb)
 };

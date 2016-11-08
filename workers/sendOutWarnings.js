@@ -24,6 +24,7 @@ module.exports = function(input, done) {
             .then((err, result) => {
             if(err) {
                 log.backgroundError("Failed getting users based on last warning", err);
+                console.log(err)
             } else {
                 console.log(new Date().toLocaleString() + "\tfound "+result.length+ " users to check");
                 for(var i=0; i<result.length; i++) {

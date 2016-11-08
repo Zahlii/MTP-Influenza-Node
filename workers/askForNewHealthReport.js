@@ -18,9 +18,9 @@ module.exports = function(input, done) {
 
         const threshhold = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
 
-        User.getForAskNewHealthReportUser( threshhold, (err, result) => {
-            if(err) {
-                log.backgroundError("Failed getting users based on last healthstate", err);
+        User.getForAskNewHealthReportUser(threshhold, (result) => {
+            if(!result) {
+                log.backgroundError("Failed getting users based on last healthstate");
             } else {
                 console.log(new Date().toLocaleString() + "\tfound "+result.length+ " users to remind");
                 for(var i=0;i<result.length;i++) {
