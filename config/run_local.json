@@ -16,7 +16,7 @@
     },
     "APN": {
         "passphrase":"influenza2016",
-        "certificate": "pusn_neu.p12"
+        "certificate": "influenza_push_service.p12"
     },
     "calc": {
         "infectionHealthScoreThreshold":40,

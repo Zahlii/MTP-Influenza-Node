@@ -24,7 +24,8 @@ client.APIError = function(message,err,info) {
             URL:info.url,
             data:info.body,
             time:info.responseTime,
-            steps:info.timing
+            steps:info.timing,
+            err:err
         },
         tags:{
             App:'NODE',
