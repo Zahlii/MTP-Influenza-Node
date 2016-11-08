@@ -2,9 +2,11 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const pushAgent = require('./../util/push');
+const sendPushNotification = require('./../util/push').sendPushNotification;
 const log = require('../util/log.js');
 const locales = require('../util/locales');
+const config = require('config');
+
 
 
 const schema = new Schema({
@@ -92,7 +94,7 @@ const schema = new Schema({
             type: [Number],
             required: true
         }
-    },
+    }
 });
 
 schema.index({'lastHealthReport':1});
@@ -120,7 +122,11 @@ schema.statics.getWarningPushUser = function (lastWarningThreshold, cb) {
                 {$where : 'this.lastLocation.coordinates.length = 2'}
             ]
         }, cb)
-}
+};
+
+schema.statics.deleteToken = function (token, cb) {
+
+};
 
 schema.methods.sendPushNotification = function (data, cb) {
     var completed = 0;
@@ -129,7 +135,7 @@ schema.methods.sendPushNotification = function (data, cb) {
 
     for (var i = 0; i < deviceTokens_length; i++) {
         let currentToken = this.deviceTokens[i];
-        pushAgent.sendPushNotification(currentToken, data, (err) => {
+        sendPushNotification(currentToken, data, (err) => {
             push_errors.push(err);
             if (++completed >= deviceTokens_length) {
                 if (cb)

@@ -38,6 +38,7 @@ agent.on('message:error', function (err, msg) {
             message:msg
         }
     });
+
     switch (err.name) {
         // This error occurs when Apple reports an issue parsing the message.
         case 'GatewayNotificationError':
@@ -49,8 +50,7 @@ agent.on('message:error', function (err, msg) {
             // to notifications for your application.
             if (err.code === 8) {
                 console.log('    > %s', msg.device().toString());
-                // In production you should flag this token as invalid and not
-                // send any futher messages to it until you confirm validity
+
             }
 
             break;

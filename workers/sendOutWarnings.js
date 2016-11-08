@@ -1,12 +1,13 @@
+'use strict'
+
 function scheduleEvery(seconds,fn) {
     fn();
     setInterval(fn,1000*seconds);
 }
 
-
-const mongoose = require('mongoose');
 const monogooseInitiator = require('../model/index.js');
 monogooseInitiator.initMongoose();
+const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const HealthReport = mongoose.model('HealthReport');
 const Location = mongoose.model('Location');
