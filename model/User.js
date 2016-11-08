@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const sendPushNotification = require('./../util/push').sendPushNotification;
+const pushAgent = require('./../util/push');
 const log = require('../util/log.js');
 const locales = require('../util/locales');
 const config = require('config');
@@ -136,10 +136,15 @@ schema.methods.sendPushNotification = function (data, cb) {
     for (var i = 0; i < deviceTokens_length; i++) {
         let currentToken = this.deviceTokens[i];
         sendPushNotification(currentToken, data, (err) => {
-            push_errors.push(err);
+            if(err)
+                push_errors.push(err);
             if (++completed >= deviceTokens_length) {
-                if (cb)
-                    cb(push_errors, {"status": "ok", "deviceTokens": deviceTokens_length});
+                if (cb) {
+                    cb(push_errors.length > 0 ? push_errors : null, {
+                        "status": "ok",
+                        "deviceTokens": deviceTokens_length
+                    });
+                }
             }
         })
     }
