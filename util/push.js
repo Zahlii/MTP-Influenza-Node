@@ -1,17 +1,24 @@
 'use strict';
 
 const join = require('path').join;
-const pfx = join(__dirname, '../config/influenza_push_service.p12');
+
 const apnagent = require('apnagent');
 const agent = new apnagent.Agent();
 const config = require('config');
 const log = require('./log');
 
+const pfx = join(__dirname, '../config/'+config.APN.certificate);
+
+
+console.log('using PFX ' + pfx);
+
 agent.set('pfx file', pfx);
 agent.set('passphrase',config.APN.passphrase);
-agent.enable('sandbox');
+//agent.enable('sandbox');
 
 agent.connect(function (err) {
+
+    console.log(err);
 
     if (err && err.name === 'GatewayAuthorizationError') {
         console.log('Authentication Error: %s', err.message);
