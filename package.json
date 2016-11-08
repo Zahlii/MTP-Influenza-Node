@@ -1,7 +1,7 @@
 {
   "name": "mtp_influenza_node",
   "engines": {
-    "node": ">4.4.4"
+    "node": ">6.0"
   },
   "version": "1.0.0",
   "description": "Node js backend for the Master team project at University Mannheim",
