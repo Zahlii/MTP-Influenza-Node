@@ -81,5 +81,7 @@ module.exports.sendPushNotification = (device,data,cb) => {
             msg = msg.set(prop,data[prop]);
     }
 
+    msg.set('_token',device);
+
     msg.send(cb);
 };
