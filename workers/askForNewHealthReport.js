@@ -16,36 +16,9 @@ module.exports = function(input, done) {
     scheduleEvery(600,function() {
         console.log(new Date().toLocaleString() + "\tasking for new health reports...");
 
-        const dt = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
+        const threshhold = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
 
-        User.find({
-            $and: [
-                {
-                    $or: [
-                        {
-                            lastHealthReport: {
-                                $lt: dt
-                            }
-                        },
-                        {
-                            lastHealthReport: null
-                        }
-                    ]
-                },
-                {
-                    $or: [
-                        {
-                            lastHealthstateReminder: {
-                                $lt: dt
-                            }
-                        },
-                        {
-                            lastHealthstateReminder: null
-                        }
-                    ]
-                }
-            ]
-        },(err,result) => {
+        User.getForAskNewHealthReportUser( threshhold, (err, result) => {
             if(err) {
                 log.backgroundError("Failed getting users based on last healthstate", err);
             } else {

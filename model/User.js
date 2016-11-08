@@ -124,6 +124,21 @@ schema.statics.getWarningPushUser = function (lastWarningThreshold, cb) {
         }, cb)
 };
 
+schema.statics.getForAskNewHealthReportUser = function (askForNewHealthReportThreshold, cb) {
+    return this.find({
+        $and: [
+            {$or: [
+                    { lastHealthReport: {$lt: askForNewHealthReportThreshold}},
+                    {lastHealthReport: null}
+            ]},
+            {$or: [
+                    {lastHealthstateReminder: {$lt: askForNewHealthReportThreshold}},
+                    {lastHealthstateReminder: null}
+            ]}
+        ]
+    }, cb)
+};
+
 schema.statics.deleteToken = function (token, cb) {
 
 };
