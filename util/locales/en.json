@@ -1,4 +1,5 @@
 {
 	"PUSH_ALERT_FLU": "Flu alert! Today there were %s new flu infections in your warning area.",
-	"PUSH_REMINDER_HEALTHSTATE": "Your last health report was quite some time ago. Please consider sending a new one - you won't get precise warnings for your area otherwise."
+	"PUSH_REMINDER_HEALTHSTATE": "Your last health report was quite some time ago. Please consider sending a new one - you won't get precise warnings for your area otherwise.",
+	"PUSH_TEST": "This is a Test."
 }

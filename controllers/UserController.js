@@ -4,6 +4,8 @@ const User = mongoose.model('User');
 const fb = require('fbgraph');
 const bcrypt = require('bcrypt-nodejs');
 const log = require('../util/log.js');
+const locales = require('../util/locales');
+
 
 module.exports.registerUser = (req,res, next) => {
     const bdy = req.body;
@@ -210,8 +212,9 @@ module.exports.sendPushNotification = (req,res,next) => {
             res.send(500, new Error('Unknown user ' + bdy._user+'.'));
             return next();
         } else {
+            locales.setLocale(u.settings.locale);
             doc.sendPushNotification({
-                message: 'Test Notification'
+                message: locales.__("PUSH_TEST")
             },(err, info)=> {
                 if (err) {
                     log.APIError('Error while sending push notification',err,req);
