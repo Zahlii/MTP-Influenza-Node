@@ -142,7 +142,7 @@ schema.statics.getForAskNewHealthReportUser = function (askForNewHealthReportThr
 };
 
 schema.methods.deleteToken = function (token, cb) {
-    log.info("Removing outdated token " + token);
+    log.info("Removing outdated device token " + token);
     return this.update({$pull: { deviceTokens: token}}, cb);
 };
 
@@ -163,6 +163,7 @@ schema.methods.sendPushNotification = function (data, cb) {
                 if (cb) {
                     cb(isError ? push_errors : null, {
                         "status": "ok",
+                        "message": data.message,
                         "deviceTokens": this.deviceTokens
                     });
                 }

@@ -56,8 +56,9 @@ client.info = function(message) {
     _write(console.log,arguments);
 };
 client.err = function() {
+    console.error(arguments[0]);
     arguments[0] = (new Date()).toUTCString() +" - "+ arguments[0];
-    _write(console.err,arguments);
+    _write(console.error,arguments);
 };
 
 module.exports = client;

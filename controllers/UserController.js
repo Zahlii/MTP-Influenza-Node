@@ -212,7 +212,7 @@ module.exports.sendPushNotification = (req,res,next) => {
             res.send(500, new Error('Unknown user ' + bdy._user+'.'));
             return next();
         } else {
-            locales.setLocale(u.settings.locale);
+            locales.setLocale(doc.settings.locale);
             doc.sendPushNotification({
                 message: locales.__("PUSH_TEST")
             },(err, info)=> {
