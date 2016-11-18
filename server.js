@@ -15,7 +15,7 @@ require('pmx').init({
     http : true
 });
 
-console.log('CWD is: ' + process.cwd());
+log.info('CWD is: ' + process.cwd());
 
 var settings = {
     name : config.get('Server.name')|| 'MTP'
@@ -51,12 +51,12 @@ server.use((req, res, next) => {
         if(r > time)
             log.APIError("High response time",null,res.info);
 
-        console.log((new Date()).toLocaleString()+"\t"+res.info.method+"\t"+res.info.url+"\t"+r);
+        log.info(res.info.method+"\t"+res.info.url+"\t"+r);
     });
     return next();
 });
 server.on('uncaughtException', function (req, res, route, err, cb) {
-    console.error(err);
+    log.err(err);
     //res.send(500, 'Internal Error')
     //log.APIError('Uncaught Exception', req, err);
 });
@@ -69,7 +69,7 @@ monogooseInitiator.initMongoose();
 routes(server);
 
 
-console.log('Server started.');
+log.info('Server started.');
 server.listen((process.env.PORT ||config.get('Server.port')), function () {
-    console.log('%s listening at %s', server.name, server.url);
+    log.info('%s listening at %s', server.name, server.url);
 });

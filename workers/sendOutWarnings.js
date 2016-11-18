@@ -18,15 +18,15 @@ module.exports = function(input, done) {
     scheduleEvery(600,function() {
         const dt = new Date(Date.now()-config.calc.warningTimeInterval*1000);
 
-        console.log(new Date().toLocaleString() + "\twarning users...");
+        log.info("Warning users...");
 
         User.getWarningPushUser(dt).exec()
             .then((err, result) => {
             if(err) {
                 log.backgroundError("Failed getting users based on last warning", err);
-                console.log(err)
+                log.err(err);
             } else {
-                console.log(new Date().toLocaleString() + "\tfound "+result.length+ " users to check");
+                log.info("Found "+result.length+ " users to check");
                 for(var i=0; i<result.length; i++) {
                     let user = result[i];
                     user.sendPushWarning(done);

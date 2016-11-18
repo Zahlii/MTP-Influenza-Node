@@ -47,4 +47,17 @@ client.backgroundError = function(message,err) {
 
 };
 
+function _write(out,args) {
+    //console.log.
+    out.apply(this,args);
+}
+client.info = function(message) {
+    arguments[0] = (new Date()).toUTCString() +" - "+ arguments[0];
+    _write(console.log,arguments);
+};
+client.err = function() {
+    arguments[0] = (new Date()).toUTCString() +" - "+ arguments[0];
+    _write(console.err,arguments);
+};
+
 module.exports = client;

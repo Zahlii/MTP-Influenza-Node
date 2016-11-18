@@ -6,12 +6,12 @@ const config = require('config');
 const log = require('./log');
 
 const pfx = join(__dirname, '../config/'+config.APN.certificate);
-console.log('using PFX ' + pfx);
+log.info('using PFX ' + pfx);
 
 const options = {
     pfx: pfx,
     production: false,
-    passphrase: config.APN.passphrase
+    //passphrase: config.APN.passphrase
 };
 
 const apnProvider = new apn.Provider(options);

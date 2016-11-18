@@ -14,7 +14,7 @@ const locales = require('../util/locales');
 
 module.exports = function(input, done) {
     scheduleEvery(600,function() {
-        console.log(new Date().toLocaleString() + "\tasking for new health reports...");
+        log.info("Asking for health reports");
 
         const threshhold = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
 
@@ -22,10 +22,10 @@ module.exports = function(input, done) {
             if(!result) {
                 log.backgroundError("Failed getting users based on last healthstate");
             } else {
-                console.log(new Date().toLocaleString() + "\tfound "+result.length+ " users to remind");
+                log.info("found "+result.length+ " users to remind");
                 for(var i=0;i<result.length;i++) {
                     var u = result[i];
-                    console.log('Sending out healthstate reminder to '+u._id);
+                    log.info('Sending out healthstate reminder to '+u._id);
                     u.lastHealthstateReminder = new Date();
                     u.save();
                     locales.setLocale(u.settings.locale);

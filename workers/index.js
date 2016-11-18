@@ -1,11 +1,11 @@
 const fs = require('fs');
 const spawn = require('threads').spawn;
-const log = require('../util/log.js');
+const log = require('../util/log');
 
 module.exports = function() {
     fs.readdirSync('./workers').forEach((file) => {
         if (file.substr(-3, 3) === '.js' && file !== 'index.js') {
-            console.log(file);
+            log.info("Loading worker "+file);
             var w = spawn('./workers/' + file).on('message', function(message) {
                 log.captureMessage("Worker "+file+" message: " + message,{
                     tags:{

@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const pushAgent = require('./../util/push');
-const log = require('../util/log.js');
+const log = require('../util/log');
 const locales = require('../util/locales');
 const config = require('config');
 
@@ -141,8 +141,9 @@ schema.statics.getForAskNewHealthReportUser = function (askForNewHealthReportThr
     }, cb)
 };
 
-schema.statics.deleteToken = function (token, cb) {
-
+schema.methods.deleteToken = function (token, cb) {
+    log.info("Removing outdated token " + token);
+    return this.update({$pull: { deviceTokens: token}}, cb);
 };
 
 schema.methods.sendPushNotification = function (data, cb) {
@@ -152,14 +153,17 @@ schema.methods.sendPushNotification = function (data, cb) {
 
     for (var i = 0; i < deviceTokens_length; i++) {
         let currentToken = this.deviceTokens[i];
-        sendPushNotification(currentToken, data, (err) => {
-            if(err)
+        pushAgent.sendPushNotification(currentToken, data, (err) => {
+            if(err && err.length>0) {
                 push_errors.push(err);
+                this.deleteToken(err[0].device);
+            }
             if (++completed >= deviceTokens_length) {
+                var isError = push_errors.length > 0 ;
                 if (cb) {
-                    cb(push_errors.length > 0 ? push_errors : null, {
+                    cb(isError ? push_errors : null, {
                         "status": "ok",
-                        "deviceTokens": deviceTokens_length
+                        "deviceTokens": this.deviceTokens
                     });
                 }
             }
@@ -174,7 +178,7 @@ schema.methods.sendPushWarning = function (cb) {
             log.backgroundError("Failed getting locations around user", err);
         } else {
             var location_length = locations.length;
-            console.log('Got ' + location_length +' flu cases around '+ user._id);
+            log.info('Got ' + location_length +' flu cases around '+ user._id);
             if(location_length >= config.calc.minNewInfectionsForWarning) {
                 this.lastWarningMessage = new Date();
                 this.save();
