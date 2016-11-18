@@ -6,6 +6,7 @@ const base = path.resolve('./');
 const heatmap = require('../util/heatmap');
 const SphericalMercator = require('sphericalmercator');
 const SIZE = 256;
+const config = require('config');
 const mongoose = require('mongoose');
 const Location = mongoose.model('Location');
 const timing = require('../util/timing.js');
@@ -87,7 +88,43 @@ function getDataPoints(dateStart,dateEnd,bbox,cb) {
     // use 2DSphere
     // {geo: { $geoWithin: { $geometry: { type:"Polygon", coordinates: [[[8,49],[8,50],[9,50],[9,49],[8,49]]] } } } }
     // sw, nw, ne, se, sw
-    Location.find({
+    Location.aggregate([{
+            $match: {
+                geo: {
+                    $geoWithin: {
+                        $geometry: {
+                            type:"Polygon",
+                            coordinates: s
+                        }
+                    }
+                },
+                healthScore: {
+                    $gte: config.calc.infectionHealthScoreThreshold  // above threshold
+                },
+                timestamp: {
+                    $gte: dateStart,
+                    $lte: dateEnd
+                }
+            }
+        }, {
+            $sort: {
+                timestamp: -1 // DESC
+            }
+        }, {
+            $group: {
+                _id: "$_user", // $_user nachher
+                geo: {
+                    $first: "$geo" // newest location
+                },
+                healthScore: {
+                    $avg: "$healthScore" // average healthscore in the time
+                }
+            }
+        }],
+        cb
+    );
+
+/*.find({
         timestamp: {
             $gte:dateStart,
             $lte:dateEnd
@@ -100,7 +137,7 @@ function getDataPoints(dateStart,dateEnd,bbox,cb) {
                 }
             }
         }
-    },cb);
+    },cb);*/
 
 
 
