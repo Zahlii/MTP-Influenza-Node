@@ -1,4 +1,4 @@
-const http = require('http');
+const https = require('https');
 const httpProxy = require('http-proxy');
 const HttpProxyRules = require('http-proxy-rules');
 
@@ -29,9 +29,19 @@ if(os.hostname() == "wifo1-30") {
 
 
 var proxy = httpProxy.createProxy(settings);
+//
+// Listen for the `error` event on `proxy`.
+proxy.on('error', function (err, req, res) {
+  res.writeHead(500, {
+    'Content-Type': 'text/plain'
+  });
+
+//console.log(err);
+  res.end(err);
+});
 
 
-http.createServer(function(req, res) {
+https.createServer(settings.ssl,function(req, res) {
 
     var target = proxyRules.match(req);
 
@@ -44,6 +54,6 @@ http.createServer(function(req, res) {
     res.writeHead(500, { 'Content-Type': 'text/plain' });
     res.end('No rule found for this request');
 
-}).listen(process.env.PORT ||config.get('Server.port'),function () {
+}).listen(process.env.PORT ||config.get('Server.port'),function (s) {
     log.info('Proxy started.');
 });
