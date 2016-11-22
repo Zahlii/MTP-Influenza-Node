@@ -4,7 +4,7 @@ const HttpProxyRules = require('http-proxy-rules');
 
 const config  = require('config');
 const log = require('./util/log.js');
-
+const os  = require('os');
 
 const port_static = config.get('Server.port_static') || 8081;
 const port_api = config.get('Server.port_api') || 8082;
