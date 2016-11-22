@@ -1,16 +1,16 @@
 {
   "apps" : [{
-    	"name"        : "server",
+    	"name"        : "server_api",
     	"node_args"	: "--expose-gc",
-		"script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/server.js",
+		"script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/server_api.js",
     	"watch"       	: false,
     	"instances"   	: 2,
     	"exec_mode"   	: "cluster",
     	"cwd"		: "/home/tp-influenca/src/MTP-Influenza-Node/"
   },{
-	  "name"        : "static",
+	  "name"        : "server_static",
 	  "node_args"	: "",
-	  "script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/static.js",
+	  "script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/server_static.js",
 	  "watch"       	: false,
 	  "instances"   	: 2,
 	  "exec_mode"   	: "cluster",

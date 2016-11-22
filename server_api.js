@@ -69,6 +69,6 @@ monogooseInitiator.initMongoose();
 routes(server);
 
 
-server.listen((process.env.PORT ||config.get('Server.port')), function () {
+server.listen((process.env.PORT ||config.get('Server.port_api')), function () {
     log.info('API Server started.');
 });

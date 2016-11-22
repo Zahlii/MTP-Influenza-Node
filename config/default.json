@@ -1,9 +1,11 @@
 {
     "Server": {
         "name": "MTP",
-        "name_static" : "MTP_Static",
         "port": "8080",
-        "port_static" : "8081"
+        "name_static" : "MTP_Static",
+        "port_static" : "8081",
+        "name_api" : "MTP_API",
+        "port_api" : "8082"
     },
     "MongoDB": {
         "host": "mongodb:///tmp/mongodb-27016.sock/mtp-influenza",
