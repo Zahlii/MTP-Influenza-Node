@@ -1,7 +1,9 @@
 {
     "Server": {
         "name": "MTP",
-        "port": "8080"
+        "port": "8080",
+        "name_static" : "MTP_Static",
+        "port_static" : "8081"
     },
     "MongoDB": {
         "host": "mongodb://wifo1-30.bwl.uni-mannheim.de:27016/mtp-influenza",

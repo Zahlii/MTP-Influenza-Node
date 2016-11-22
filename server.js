@@ -58,10 +58,10 @@ server.use((req, res, next) => {
 server.on('uncaughtException', function (req, res, route, err, cb) {
     log.err(err);
     //res.send(500, 'Internal Error')
-    //log.APIError('Uncaught Exception', req, err);
+    log.APIError('Uncaught Exception', req, err);
 });
 
-//server.use(restify.gzipResponse());
+server.use(restify.gzipResponse());
 server.pre(restify.pre.sanitizePath());
 
 
@@ -69,7 +69,6 @@ monogooseInitiator.initMongoose();
 routes(server);
 
 
-log.info('Server started.');
 server.listen((process.env.PORT ||config.get('Server.port')), function () {
-    log.info('%s listening at %s', server.name, server.url);
+    log.info('API Server started.');
 });

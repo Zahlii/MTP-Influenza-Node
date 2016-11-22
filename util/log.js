@@ -2,16 +2,50 @@
 const raven = require('raven');
 const client = new raven.Client('https://038b0c8eafd44e08b61254bbcb8a1129:c329cefa99c04f6a801a80817471bea2@sentry.io/99802');
 
+function _write(out,args) {
+    //console.log.
+    out.apply(this,args);
+}
+client.info = function(message) {
+    arguments[0] = (new Date()).toUTCString() +" - "+ arguments[0];
+    _write(console.log,arguments);
+};
+client.err = function() {
+    console.error(arguments[0]);
+    arguments[0] = (new Date()).toUTCString() +" - "+ arguments[0];
+    _write(console.error,arguments);
+};
+
+
 process.on('uncaughtException', function(err) {
-    console.error(err);
+    client.err(err);
 });
 
 client.patchGlobal();
+
+client.staticError = function(message,err,info) {
+    var msg = err && err.message ? message + " | " + err.message : message;
+
+    client.err(msg);
+    this.captureException(new Error(msg),{
+        extra:{
+            URL:info.url,
+            data:info.body,
+            time:info.responseTime,
+            err:err
+        },
+        tags:{
+            App:'NODE_STATIC',
+            URL:info.url
+        }
+    });
+};
+
 client.APIError = function(message,err,info) {
     //console.log(req);
     var msg = err && err.message ? message + " | " + err.message : message;
 
-    console.error(msg);
+    client.err(msg);
 
     if(info && info.body && info.body._user) {
         this.setUserContext({
@@ -38,7 +72,7 @@ client.backgroundError = function(message,err) {
     //console.log(req);
     var msg = err && err.message ? message + " | " + err.message : message;
 
-    console.error(msg);
+    client.err(msg);
     this.captureException(new Error(msg),{
         tags:{
             App:'NODE_BACKGROUND'
@@ -47,18 +81,5 @@ client.backgroundError = function(message,err) {
 
 };
 
-function _write(out,args) {
-    //console.log.
-    out.apply(this,args);
-}
-client.info = function(message) {
-    arguments[0] = (new Date()).toUTCString() +" - "+ arguments[0];
-    _write(console.log,arguments);
-};
-client.err = function() {
-    console.error(arguments[0]);
-    arguments[0] = (new Date()).toUTCString() +" - "+ arguments[0];
-    _write(console.error,arguments);
-};
 
 module.exports = client;

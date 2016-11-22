@@ -4,9 +4,17 @@
     	"node_args"	: "--expose-gc",
 		"script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/server.js",
     	"watch"       	: false,
-    	"instances"   	: 4,
+    	"instances"   	: 2,
     	"exec_mode"   	: "cluster",
     	"cwd"		: "/home/tp-influenca/src/MTP-Influenza-Node/"
+  },{
+	  "name"        : "static",
+	  "node_args"	: "",
+	  "script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/static.js",
+	  "watch"       	: false,
+	  "instances"   	: 2,
+	  "exec_mode"   	: "cluster",
+	  "cwd"		: "/home/tp-influenca/src/MTP-Influenza-Node/"
   },{
     	"name"        : "background",
     	"node_args"	: "",
