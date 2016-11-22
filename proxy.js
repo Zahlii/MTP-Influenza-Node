@@ -11,15 +11,23 @@ const port_api = config.get('Server.port_api') || 8082;
 
 var proxyRules = new HttpProxyRules({
     rules: {
-        '.*/visualize/?': 'http://localhost:'+port_static+'/visualize/',  // Data visualization
-        '.*/www/?': 'http://localhost:'+port_static+'/www/',  // Other statics
-        '.*/api1/?': 'http://localhost:'+port_api+'/api1/',   // API
-        '.*/admin/?': 'http://localhost:'+port_api+'/admin/',   // API
+        '.*/visualize/?': 'https://localhost:'+port_static+'/visualize/',  // Data visualization
+        '.*/www/?': 'https://localhost:'+port_static+'/www/',  // Other statics
+        '.*/api1/?': 'https://localhost:'+port_api+'/api1/',   // API
+        '.*/admin/?': 'https://localhost:'+port_api+'/admin/',   // API
     }
 });
 
 
-var proxy = httpProxy.createProxy();
+var settings = {ssl:{}};
+
+if(os.hostname() == "wifo1-30") {
+    settings.ssl.cert = fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/fullchain.pem');
+    settings.ssl.key = fs.readFileSync('/etc/letsencrypt/live/wifo1-30.bwl.uni-mannheim.de/privkey.pem');
+}
+
+
+var proxy = httpProxy.createProxy(settings);
 
 
 http.createServer(function(req, res) {
