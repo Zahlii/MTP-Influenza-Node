@@ -8,6 +8,14 @@
     	"exec_mode"   	: "cluster",
     	"cwd"		: "/home/tp-influenca/src/MTP-Influenza-Node/"
   },{
+	  "name"        : "main_proxy",
+	  "node_args"	: "",
+	  "script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/proxy.js",
+	  "watch"       	: false,
+	  "instances"   	: 1,
+	  "exec_mode"   	: "fork",
+	  "cwd"		: "/home/tp-influenca/src/MTP-Influenza-Node/"
+  },{
 	  "name"        : "server_static",
 	  "node_args"	: "",
 	  "script"      	: "/home/tp-influenca/src/MTP-Influenza-Node/server_static.js",
