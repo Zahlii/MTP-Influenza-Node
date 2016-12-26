@@ -73,4 +73,49 @@ module.exports.getTotalInfectionsAroundPositionAtDate = (req, res, next) => {
         return next();
     })
 
-};
+}
+
+module.exports.getTimelineInfo = (req,res,next) => {
+    /*db.getCollection('locations').aggregate([{
+        $match: {
+            geo: {
+                $geoNear: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [8.5,49.5] // LNG, LAT
+                    },
+                    $minDistance: 0,
+                    $maxDistance: 500000 // PROX
+                }
+            },
+            healthScore: {
+                $gte: 40 // above threshold
+            },
+            isNewlyInfected: true
+        }
+    }, {
+        $group: {
+            _id: { $dateToString: {format:"%Y-%m-%d", date: "$timestamp" }},
+            count: { $sum: 1 }
+        }
+    }]);*/
+
+
+    /*db.getCollection('locations').aggregate([{
+     $match: {
+     healthScore: {
+     $gte: 40 // above threshold
+     },
+     isNewlyInfected: true
+     }
+     }, {
+     $group: {
+     _id : { dt : { $dateToString: {format:"%Y-%m-%d", date: "$timestamp" }}, u: "$_user" },
+     }
+     }, {
+     $group: {
+     _id : "$_id.dt",
+     count: { $sum: 1 }
+     }
+     }]);*/
+}

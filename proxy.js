@@ -40,6 +40,16 @@ proxy.on('error', function (err, req, res) {
   res.end(err);
 });
 
+//
+// Listen for the `error` event on `proxy`.
+proxy.on('error', function (err, req, res) {
+    res.writeHead(500, {
+        'Content-Type': 'text/plain'
+    });
+
+    res.end(err);
+});
+
 
 https.createServer(settings.ssl,function(req, res) {
 
