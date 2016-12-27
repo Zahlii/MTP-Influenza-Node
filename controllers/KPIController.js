@@ -80,9 +80,10 @@ module.exports.getTimelineInfo = (req,res,next) => {
 
     const bdy = req.body;
 
-    var bbox = [parseFloat(bdy.latSW), parseFloat(bdy.lngSW), parseFloat(bdy.latNE), parseFloat(bdy.lngNE)];
+    var bbox = [parseFloat(bdy.lngSW), parseFloat(bdy.latSW), parseFloat(bdy.lngNE), parseFloat(bdy.latNE)];
 
     var s = [[[bbox[0],bbox[1]],[bbox[0],bbox[3]],[bbox[2],bbox[3]],[bbox[2],bbox[1]],[bbox[0],bbox[1]]]];
+    
     Location.aggregate([{
         $match: {
             geo: {
