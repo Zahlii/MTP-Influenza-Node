@@ -58,6 +58,12 @@ module.exports = (server) => {
         return next();
     });
 
+    api1router.put('/kpi/timeline', (req, res, next) => {
+        require('../controllers/KPIController')
+            .getTimelineInfo(req,res,next);
+        return next();
+    });
+
     api1router.get('/tiles/:year/:month/:day/:hour/:z/:x/:y.png', (req, res, next) => {
         require('../controllers/TileController')
             .renderTile(req, res, next)

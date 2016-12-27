@@ -73,49 +73,68 @@ module.exports.getTotalInfectionsAroundPositionAtDate = (req, res, next) => {
         return next();
     })
 
-}
+};
 
 module.exports.getTimelineInfo = (req,res,next) => {
-    /*db.getCollection('locations').aggregate([{
+    // [ 8.4375, 49.15296965617039, 8.7890625, 49.38237278700955 ] sw, ne => bbox
+
+    const bdy = req.body;
+
+    var bbox = [parseFloat(bdy.lngSW), parseFloat(bdy.latSW), parseFloat(bdy.latNE), parseFloat(bdy.lngNE)];
+
+    var s = [[[bbox[0],bbox[1]],[bbox[0],bbox[3]],[bbox[2],bbox[3]],[bbox[2],bbox[1]],[bbox[0],bbox[1]]]];
+    Location.aggregate([{
         $match: {
             geo: {
-                $geoNear: {
+                $geoWithin: {
                     $geometry: {
-                        type: "Point",
-                        coordinates: [8.5,49.5] // LNG, LAT
-                    },
-                    $minDistance: 0,
-                    $maxDistance: 500000 // PROX
+                        type: "Polygon",
+                        coordinates: s
+                    }
                 }
             },
             healthScore: {
-                $gte: 40 // above threshold
-            },
-            isNewlyInfected: true
+                $gte: config.calc.infectionHealthScoreThreshold
+            }
+        }
+    }, {
+        $project: {
+            timestamp:1,
+            _id:1,
+            _user:1,
+            isNew: { $cond: ["$isNewlyInfected",1,0] }
         }
     }, {
         $group: {
-            _id: { $dateToString: {format:"%Y-%m-%d", date: "$timestamp" }},
-            count: { $sum: 1 }
+            _id: {
+                dt: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$timestamp"
+                    }
+                },
+                u: "$_user"
+            },
+            isNew: { $first : "$isNew" }
         }
-    }]);*/
-
-
-    /*db.getCollection('locations').aggregate([{
-     $match: {
-     healthScore: {
-     $gte: 40 // above threshold
-     },
-     isNewlyInfected: true
-     }
-     }, {
-     $group: {
-     _id : { dt : { $dateToString: {format:"%Y-%m-%d", date: "$timestamp" }}, u: "$_user" },
-     }
-     }, {
-     $group: {
-     _id : "$_id.dt",
-     count: { $sum: 1 }
-     }
-     }]);*/
-}
+    }, {
+        $group: {
+            _id: "$_id.dt",
+            countAll: {
+                $sum: 1
+            },
+            countNew: {
+                $sum: "$isNew"
+            }
+        }
+    }, {
+        $sort: { _id: -1 }
+    }]).exec().then(r => {
+        res.send(201,r);
+    }).catch(err => {
+        log.APIError('Failed to retrieve KPI timeline data',err,req);
+        res.send(500,err);
+    }).finally(() => {
+        return next();
+    })
+};
