@@ -17,6 +17,8 @@
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
 
+    <link href="css/influenza.css" rel="stylesheet">
+
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
@@ -109,11 +111,29 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/plugins/flot/jquery.flot.js"></script>
     <script src="js/plugins/flot/jquery.flot.time.js"></script>
+    <script src="js/plugins/flot/jquery.flot.barnumbers.js"></script>
 
-    <script src="js/influenza.js"></script>
+    <script type="text/javascript">
+        const ENDPOINT = 'https://wifo1-30.bwl.uni-mannheim.de/';
+        const API_ENDPOINT = ENDPOINT + 'api1/kpi';
+        const TILE_ENDPOINT = ENDPOINT + 'api1/tiles';
+    </script>
+    <script src="js/influenza.heatmap.js"></script>
+    <script src="js/influenza.graph.js"></script>
+    <script type="text/javascript">
+        function initMap() {
+            var i = new InfluenzaMap(document.getElementById('map'));
+            i.setCurrentDate(new Date("2016-11-17"));
+
+            var d = new InfluenzaDashboardGraph($('#flot_timeline'));
+
+            i.on('bounds_changed',(bounds) => {
+                d.loadForBounds(bounds);
+            });
+        }
+
+    </script>
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAn_1UqrgSqs8fKZOjilK7J4WcXzb74F14&signed_in=true&callback=initMap"></script>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAn_1UqrgSqs8fKZOjilK7J4WcXzb74F14&callback=initMap"></script>
 </body>
-</body>
-
 </html>
