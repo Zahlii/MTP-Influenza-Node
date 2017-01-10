@@ -34,7 +34,8 @@ function InfluenzaMap(node) {
         _lastCurrentDate = null,
         _currentBounds = null,
         _listeners = {
-            'bounds_changed': []
+            'bounds_changed': [],
+            'time_changed': []
         };
 
     var _map = new google.maps.Map(node, {
@@ -73,6 +74,10 @@ function InfluenzaMap(node) {
         this.reloadOverlay();
     };
 
+    this.toNow = () => {
+        this.setCurrentDate(new Date());
+    };
+
     this.previousStep = () => {
         _currentDate = _adjustDate(_currentDate,-STEP*1000);
         this.reloadOverlay();
@@ -108,6 +113,7 @@ function InfluenzaMap(node) {
         _lastCurrentDate = _currentDate;
 
         console.log('Showing HeatMap for ' + _currentDate);
+        _executeListeners('time_changed',_currentDate);
 
         var imageMapType = new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
@@ -135,6 +141,6 @@ function InfluenzaMap(node) {
         _map.overlayMapTypes.push(imageMapType);
     };
 
-    this.reloadOverlay();
+
 }
 

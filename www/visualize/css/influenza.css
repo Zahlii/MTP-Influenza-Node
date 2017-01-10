@@ -1,3 +1,18 @@
 .legendLabel {
     color:#333 !important;
 }
+#history_controls {
+    text-align:center;
+}
+/* centered columns styles */
+.row-centered {
+    text-align:center;
+}
+/*.col-centered {
+    display:inline-block;
+    float:none;
+
+    text-align:left;
+
+    margin-right:-4px;
+}*/
