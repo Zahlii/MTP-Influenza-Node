@@ -36,14 +36,22 @@ function InfluenzaMap(node) {
         _listeners = {
             'bounds_changed': [],
             'time_changed': []
-        };
+        },
+        _isPlaying = false,
+        _playbackTimer;
 
     var _map = new google.maps.Map(node, {
-        zoom: 13,
+        zoom: 10,
+        mapTypeId: google.maps.MapTypeId.HYBRID,
         center: {lat: 49.5, lng: 8.5},
         maxZoom: 15,
-        minZoom: 8
+        minZoom: 8,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        }
     });
+    _map.overlayMapTypes.push(null); //placeholder
     var _node = node;
 
     google.maps.event.addListener(_map, 'bounds_changed', (function () {
@@ -104,6 +112,21 @@ function InfluenzaMap(node) {
         _listeners[event].push(fn);
     };
 
+    this.play = () => {
+        if(_isPlaying)
+            return;
+
+        _isPlaying = true;
+        _playbackTimer = window.setInterval(this.nextStep,1000);
+    };
+
+    this.pause = () => {
+        if(!_isPlaying)
+            return;
+        window.clearInterval(_playbackTimer);
+        _isPlaying = false;
+    };
+
     this.reloadOverlay = () => {
 
         // prevent loading again when nothing happened
@@ -134,11 +157,12 @@ function InfluenzaMap(node) {
             },
             tileSize: new google.maps.Size(256, 256),
             opacity:0.8,
-            name: "Influenza Heatmap"
+            name: "Influenza Heatmap",
+            maxZoom:15,
+            minZoom:8
         });
 
-        _map.overlayMapTypes.clear();
-        _map.overlayMapTypes.push(imageMapType);
+        _map.overlayMapTypes.setAt(0,imageMapType);
     };
 
 

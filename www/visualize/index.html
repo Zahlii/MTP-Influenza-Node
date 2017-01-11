@@ -94,9 +94,9 @@
                         <div id="history_controls" class="btn-group">
                             <button type="button" class="btn btn-primary" onclick="_heatMap.previousStep();">-6 Hours</button>
                             <button type="button" class="btn btn-primary" onclick="_heatMap.nextStep();">+6 Hours</button>
-                            <button type="button" class="btn btn-primary"  onclick="_heatMap.toNow();">Now</button>
-                            <button type="button" class="btn btn-primary">Play</button>
-                            <button type="button" class="btn btn-primary disabled">Pause</button>
+                            <button type="button" class="btn btn-primary" onclick="_heatMap.toNow();">Now</button>
+                            <button type="button" class="btn btn-primary" id="control_play" onclick="play();">Play</button>
+                            <button type="button" class="btn btn-primary disabled" id="control_pause"  disabled onclick="pause();">Pause</button>
                         </div>
                     </div>
                 </div>
@@ -158,6 +158,17 @@
             _heatMap.reloadOverlay();
         }
 
+
+        function play() {
+            $('#control_pause').removeClass('disabled').removeAttr('disabled');
+            $('#control_play').addClass('disabled').attr('disabled',true);
+            _heatMap.play();
+        }
+        function pause() {
+            $('#control_play').removeClass('disabled').removeAttr('disabled');
+            $('#control_pause').addClass('disabled').attr('disabled',true);
+            _heatMap.pause();
+        }
     </script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAn_1UqrgSqs8fKZOjilK7J4WcXzb74F14&callback=initMap"></script>
