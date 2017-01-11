@@ -60,6 +60,9 @@ module.exports.renderTile = (req,res,next) => {
 };
 
 function getLocationCoordinates(x,y,z,lat,lng) {
+    lat = lat*(1.0001-Math.random()*0.0002); // add jitter
+    lng = lng*(1.0001-Math.random()*0.0002);
+
     var g = merc.px([lng,lat],z);
 
 
@@ -179,6 +182,7 @@ function getDataPoints(dateStart,dateEnd,bbox,cb) {
 
 
 }
+
 function renderTileInternal(dateStart,dateEnd,x,y,z,path,cb,res) {
 
 
@@ -212,6 +216,7 @@ function renderTileInternal(dateStart,dateEnd,x,y,z,path,cb,res) {
 
 					var fact = 1;//Math.pow(2,(15-z)/2);
 					var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1], d.geo.coordinates[0]);
+
 					heat.addPoint(cx.x, cx.y, {weight: d.healthScore / 100.0 / fact});
 					//console.log(cx);
 				}
