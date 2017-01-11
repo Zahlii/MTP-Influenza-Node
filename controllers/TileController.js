@@ -59,9 +59,18 @@ module.exports.renderTile = (req,res,next) => {
 
 };
 
-function getLocationCoordinates(x,y,z,lat,lng) {
-    lat = lat*(1.0001-Math.random()*0.0002); // add jitter
-    lng = lng*(1.0001-Math.random()*0.0002);
+function getLocationCoordinates(x,y,z,lat,lng,id) {
+    // generate jitter factor based on the object ID so that one heatmap point has the same position on all zooms
+    var intval = parseInt(id,16);
+    var length = id.length;
+    var max = Math.pow(16,length);
+
+    var normalized = intval/max; // [0,1]
+    normalized = normalized % 0.05; // [0,0.05]
+    normalized = normalized / 250; // [0,0.0002]
+
+    lat = lat*(1.0001-normalized); // add jitter
+    lng = lng*(1.0001-normalized);
 
     var g = merc.px([lng,lat],z);
 
@@ -215,7 +224,7 @@ function renderTileInternal(dateStart,dateEnd,x,y,z,path,cb,res) {
 					var d = data[i];
 
 					var fact = 1;//Math.pow(2,(15-z)/2);
-					var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1], d.geo.coordinates[0]);
+					var cx = getLocationCoordinates(x, y, z, d.geo.coordinates[1], d.geo.coordinates[0], d._id);
 
 					heat.addPoint(cx.x, cx.y, {weight: d.healthScore / 100.0 / fact});
 					//console.log(cx);
