@@ -88,6 +88,43 @@ function getDataPoints(dateStart,dateEnd,bbox,cb) {
     // use 2DSphere
     // {geo: { $geoWithin: { $geometry: { type:"Polygon", coordinates: [[[8,49],[8,50],[9,50],[9,49],[8,49]]] } } } }
     // sw, nw, ne, se, sw
+    Location.agrgegate([{
+        $match: {
+            healthScore: {
+                $gte: config.calc.infectionHealthScoreThreshold  // above threshold
+            },
+            timestamp: {
+                $gte: dateStart,
+                $lte: dateEnd
+            }
+        }
+    }, {
+        $sort: {
+            timestamp: -1 // DESC
+        }
+    }, {
+        $group: {
+            _id: "$_user", // $_user nachher
+            geo: {
+                $first: "$geo" // newest location
+            },
+            healthScore: {
+                $first: "$healthScore" // newest healthscore in the time
+            }
+        }
+    }, {
+        $match: { //and now we match relevant points, other way around the heatmap gets glitched
+            geo: {
+                $geoWithin: {
+                    $geometry: {
+                        type:"Polygon",
+                        coordinates: s
+                    }
+                }
+            }
+        }
+    }],cb);
+    /*
     Location.aggregate([{
             $match: {
                 geo: {
@@ -122,7 +159,7 @@ function getDataPoints(dateStart,dateEnd,bbox,cb) {
             }
         }],
         cb
-    );
+    );*/
 
 /*.find({
         timestamp: {
