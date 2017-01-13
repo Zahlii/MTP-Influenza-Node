@@ -2,8 +2,12 @@
     color:#333 !important;
 }
 #history_controls {
-    text-align:center;
 }
+/*#current_time {
+    width:150px;
+    display:inline-block;
+    margin-bottom:-2px;
+}*/
 /* centered columns styles */
 .row-centered {
     text-align:center;
