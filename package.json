@@ -45,6 +45,7 @@
     "restify": "^4.0.4",
     "restify-router": "^0.2.1",
     "sphericalmercator": "^1.0.5",
-    "threads": "^0.7.0"
+    "threads": "^0.7.0",
+    "twitter": "^1.7.0"
   }
 }
