@@ -42,7 +42,7 @@ client.stream('statuses/filter', {locations:'-180,-90,180,90'}, function(stream)
                 lat = event.geo.coordinates[1];
             }
 
-            var data = {position: pos, lat:lat,lng:lng,accuracy: accuracy, text:event.text};
+            var data = {position: pos, lat:lat,lng:lng,accuracy: accuracy, text:event.text, time: (new Date()).toISOString()};
             //console.log(data);
 
             var regex = new RegExp('(\\b' + search.join('\\b|\\b')+'\\b)','i');
