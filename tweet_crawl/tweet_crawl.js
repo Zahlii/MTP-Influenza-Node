@@ -19,6 +19,7 @@ var client = new Twitter({
 const search = 'flu|influenza|grippe|sick|fever|coughing|cold|fieber|erkältung|husten|krank'.split('|');
 
 
+var i = 1;
 
 client.stream('statuses/filter', {locations:'-180,-90,180,90'}, function(stream) {
     stream.on('data', function(event) {
@@ -26,7 +27,7 @@ client.stream('statuses/filter', {locations:'-180,-90,180,90'}, function(stream)
             var lng = 0, lat = 0, pos = null, accuracy = -1;
             //console.log(event);
 
-            //console.log(event);
+ 
 
             if(event.place) {
                 var corners = event.place.bounding_box.coordinates[0];
@@ -56,6 +57,7 @@ client.stream('statuses/filter', {locations:'-180,-90,180,90'}, function(stream)
             }
 
             var data = {
+				//number:i++,
                 position: pos,
                 lat:lat,
                 lng:lng,
@@ -66,11 +68,16 @@ client.stream('statuses/filter', {locations:'-180,-90,180,90'}, function(stream)
                 userName: event.user.screen_name,
                 tags: event.entities.hashtags,
                 symbols: event.entities.symbols,
+				mentions: event.entities.user_mentions,
                 language: event.user.lang
             };
 
+			
 
             var regex = new RegExp('(\\b' + search.join('\\b|\\b')+'\\b)','i');
+			
+			//console.log(i++);
+			
             if(event.text.match(regex)) {
                 console.log(JSON.stringify(data)+",");
             }

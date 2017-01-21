@@ -36,7 +36,6 @@ node_modules/
 
 restify.log
 nohup.out
-*.csv
 *.xlsx
 
 tiles
