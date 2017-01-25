@@ -16,6 +16,7 @@ var proxyRules = new HttpProxyRules({
         '.*/www/?': 'https://localhost:'+port_static+'/www/',  // Other statics
         '.*/api1/?': 'https://localhost:'+port_api+'/api1/',   // API
         '.*/admin/?': 'https://localhost:'+port_api+'/admin/',   // API
+	'.*/favicon.ico': 'https://localhost:'+port_static+'/www/favicon.ico'
     }
 });
 
