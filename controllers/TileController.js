@@ -32,7 +32,7 @@ module.exports.renderTile = (req,res,next) => {
         z = req.params.z,
         y = req.params["y.png"].match(/\d+/)[0];
 
-	if(dateEnd.getTime() > Date.now()) {
+	if(dateEnd.getTime() > Date.now() || y > 15) {
 		var path = base + '/tiles/clear.png';
 		var inStr = fs.createReadStream(path);
 
