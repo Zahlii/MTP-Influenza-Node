@@ -20,18 +20,15 @@ module.exports = function(input, done) {
 
         log.info("Warning users...");
 
-        User.getWarningPushUser(dt).exec()
-            .then((err, result) => {
-            if(err) {
-                log.backgroundError("Failed getting users based on last warning", err);
-                log.err(err);
-            } else {
+        User.getWarningPushUser(dt)
+            .then((result) => {
                 log.info("Found "+result.length+ " users to check");
                 for(var i=0; i<result.length; i++) {
                     let user = result[i];
                     user.sendPushWarning(done);
                 }
-            }
-        });
+        }).catch(err => {
+            log.APIError('Failed to get users for warning',err,req);
+        })
     });
 };

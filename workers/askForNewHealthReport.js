@@ -18,20 +18,19 @@ module.exports = function(input, done) {
 
         const threshhold = new Date(Date.now()-config.calc.sendNotificationOnHealthReportAge*1000);
 
-        User.getForAskNewHealthReportUser(threshhold, (result) => {
-            if(!result) {
-                log.backgroundError("Failed getting users based on last healthstate");
-            } else {
+        User.getForAskNewHealthReportUser(threshhold).then((result) => {
+
                 log.info("found "+result.length+ " users to remind");
                 for(var i=0;i<result.length;i++) {
                     var u = result[i];
-                    log.info('Sending out healthstate reminder to '+u._id);
+                    log.info('Sending out healthstate reminder to ' + u._id);
                     u.lastHealthstateReminder = new Date();
                     u.save();
                     locales.setLocale(u.settings.locale);
-                    u.sendPushNotification({message:locales.__("PUSH_REMINDER_HEALTHSTATE")});
+                    u.sendPushNotification({message: locales.__("PUSH_REMINDER_HEALTHSTATE")});
                 }
-            }
-        });
+        }).catch(err => {
+            log.APIError('Failed to get users for reminder',err,req);
+        })
     });
 };

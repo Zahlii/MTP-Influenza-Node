@@ -108,7 +108,7 @@ schema.statics.getUserByFbId = function(fbId, cb) {
     return this.find({ fbUserId: fbId }, cb);
 };
 
-schema.statics.getWarningPushUser = function (lastWarningThreshold, cb) {
+schema.statics.getWarningPushUser = function (lastWarningThreshold) {
     return this.find(
         {
             $or: [
@@ -121,10 +121,10 @@ schema.statics.getWarningPushUser = function (lastWarningThreshold, cb) {
                 {lastLocation : {$exists:true}},
                 {$where : 'this.lastLocation.coordinates.length = 2'}
             ]
-        }, cb)
+        }).exec();
 };
 
-schema.statics.getForAskNewHealthReportUser = function (askForNewHealthReportThreshold, cb) {
+schema.statics.getForAskNewHealthReportUser = function (askForNewHealthReportThreshold) {
     return this.find({
         $and: [
             {$or: [
@@ -138,7 +138,7 @@ schema.statics.getForAskNewHealthReportUser = function (askForNewHealthReportThr
             {deviceTokens : {$exists:true}},
             {$where : 'this.deviceTokens.length > 0'}
         ]
-    }, cb)
+    }).exec();
 };
 
 schema.methods.deleteToken = function (token, cb) {
@@ -174,12 +174,12 @@ schema.methods.sendPushNotification = function (data, cb) {
 
 schema.methods.sendPushWarning = function (cb) {
     let user_location = this.lastLocation.coordinates;
-    this.model('Location').getLocationsByProximityAndDate(user_location[1], user_location[0], this.settings.warnRadius*1000, now, (err,locations) => {
+    this.model('Location').getLocationsByProximityAndDate(user_location[1], user_location[0], this.settings.warnRadius*1000, new Date(), (err,locations) => {
         if(err) {
             log.backgroundError("Failed getting locations around user", err);
         } else {
             var location_length = locations.length;
-            log.info('Got ' + location_length +' flu cases around '+ user._id);
+            log.info('Got ' + location_length +' flu cases around '+ this._id);
             if(location_length >= config.calc.minNewInfectionsForWarning) {
                 this.lastWarningMessage = new Date();
                 this.save();
