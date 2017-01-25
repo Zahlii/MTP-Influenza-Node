@@ -28,9 +28,9 @@ module.exports.renderTile = (req,res,next) => {
         hour = hour - hour % 6,
         dateEnd = new Date(year + '-' + month + '-' + day + ' ' + hour +':00:00'),
         dateStart = new Date(dateEnd.getTime() - 86400*1000),
-        x = req.params.x,
-        z = req.params.z,
-        y = req.params["y.png"].match(/\d+/)[0];
+        x = parseInt(req.params.x,10),
+        z = parseInt(req.params.z,10),
+        y = parseInt(req.params["y.png"].match(/\d+/)[0],10);
 
 	if(dateEnd.getTime() > Date.now() || z > 15) {
 		var path = base + '/tiles/clear.png';
