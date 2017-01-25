@@ -1,5 +1,5 @@
 {
 	"PUSH_ALERT_FLU": "Grippewarnung! Heute gab es %s neue Infektionen in deinem Umkreis.",
-	"PUSH_REMINDER_HEALTHSTATE": "Deine letzten Gesundheits-Infos sind schon etwas älter. Bitte teile uns regelmäßig deinen Zustand mit, damit wir möglichst präzise Warnungen geben können.",
-	"PUSH_TEST": "Dies ist ein Test."
+	"PUSH_REMINDER_HEALTHSTATE": "Wie geht's dir heute? Hilf anderen Leuten durch Abgabe deines aktuellen Gesundheits-Zustandes.",
+	"PUSH_TEST": "0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000"
 }
