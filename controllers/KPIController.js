@@ -52,27 +52,67 @@ function getGroupedData(bdy,onlyNew) {
     }]).exec();
 
 }
-module.exports.getNewInfectionsAroundPositionAtDate = (req, res, next) => {
-    getGroupedData(req.body,true).then(r => {
+
+
+module.exports.getKPIInfo = (req,res,next) => {
+    const bdy = req.body;
+
+    var bbox = [parseFloat(bdy.lngSW), parseFloat(bdy.latSW), parseFloat(bdy.lngNE), parseFloat(bdy.latNE)];
+
+    var s = [[[bbox[0],bbox[1]],[bbox[0],bbox[3]],[bbox[2],bbox[3]],[bbox[2],bbox[1]],[bbox[0],bbox[1]]]];
+
+    var dateEnd = new Date(bdy.date);
+    var ts = dateEnd.getTime(),
+        ts = ts - 86400*1000,
+        dateStart = new Date(ts);
+
+    Location.aggregate([{
+        $match: {
+            geo: {
+                $geoWithin: {
+                    $geometry: {
+                        type: "Polygon",
+                        coordinates: s
+                    }
+                }
+            },
+            healthScore: {
+                $gte: config.calc.infectionHealthScoreThreshold
+            },
+            timestamp: {
+                $gte: dateStart,
+                $lte: dateEnd
+            }
+        }
+    }, {
+        $project: {
+            _id:1,
+            _user:1,
+            isNew: { $cond: ["$isNewlyInfected",1,0] }
+        }
+    }, {
+        $group: {
+            _id: "$_user",
+            isNew: { $first : "$isNew" }
+        }
+    }, {
+        $group: {
+            _id: 1,
+            countAll: {
+                $sum: 1
+            },
+            countNew: {
+                $sum: "$isNew"
+            }
+        }
+    }]).exec().then(r => {
         res.send(201,r);
     }).catch(err => {
-        log.APIError('Failed to retrieve KPI data',err,req);
+        log.APIError('Failed to retrieve KPI timeline data',err,req);
         res.send(500,err);
     }).finally(() => {
         return next();
     })
-};
-
-module.exports.getTotalInfectionsAroundPositionAtDate = (req, res, next) => {
-    getGroupedData(req.body,false).then(r => {
-        res.send(201,r);
-    }).catch(err => {
-        log.APIError('Failed to retrieve KPI data',err,req);
-        res.send(500,err);
-    }).finally(() => {
-        return next();
-    })
-
 };
 
 module.exports.getTimelineInfo = (req,res,next) => {
@@ -83,7 +123,7 @@ module.exports.getTimelineInfo = (req,res,next) => {
     var bbox = [parseFloat(bdy.lngSW), parseFloat(bdy.latSW), parseFloat(bdy.lngNE), parseFloat(bdy.latNE)];
 
     var s = [[[bbox[0],bbox[1]],[bbox[0],bbox[3]],[bbox[2],bbox[3]],[bbox[2],bbox[1]],[bbox[0],bbox[1]]]];
-    
+
     Location.aggregate([{
         $match: {
             geo: {

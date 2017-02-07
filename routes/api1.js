@@ -46,15 +46,9 @@ module.exports = (server) => {
         return next();
     });
 
-    api1router.put('/kpi/new_infections', (req, res, next) => {
+    api1router.put('/kpi/infections', (req, res, next) => {
         require('../controllers/KPIController')
-            .getNewInfectionsAroundPositionAtDate(req, res, next)
-        return next();
-    });
-
-    api1router.put('/kpi/total_infections', (req, res, next) => {
-        require('../controllers/KPIController')
-            .getTotalInfectionsAroundPositionAtDate(req, res, next)
+            .getKPIInfo(req,res,next)
         return next();
     });
 
