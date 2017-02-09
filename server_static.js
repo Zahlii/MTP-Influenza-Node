@@ -46,6 +46,8 @@ server.get(/\/www\/?.*/, restify.serveStatic({
     default: 'index.html'
 }));
 
-server.listen((process.env.PORT ||config.get('Server.port_static')), function () {
-    log.info('Static Server started.');
+const PORT = process.env.PORT ||config.get('Server.port_static');
+
+server.listen(PORT, function () {
+    log.info('API Server started on '+PORT);
 });

@@ -7,53 +7,6 @@ const log = require('../util/log.js');
 const time = require('../util/timing.js');
 const config = require('config');
 
-
-function getGroupedData(bdy,onlyNew) {
-    var dateEnd = new Date(bdy.date);
-    var ts = dateEnd.getTime(),
-        ts = ts - 86400*1000,
-        dateStart = new Date(ts);
-
-    var m = {
-        geo: {
-            $geoNear: {
-                $geometry: {
-                    type: "Point",
-                    coordinates: [parseFloat(bdy.lng),parseFloat(bdy.lat)] // LNG, LAT
-                },
-                $minDistance: 0,
-                $maxDistance: parseFloat(bdy.proximity) // PROX
-            }
-        },
-        healthScore: {
-            $gte: config.calc.infectionHealthScoreThreshold // above threshold
-        },
-        isNewlyInfected: true,
-        timestamp: {
-            $gte: dateStart,
-            $lte: dateEnd
-        }
-    };
-
-    if(!onlyNew)
-        delete m.isNewlyInfected;
-
-    return Location.aggregate([{
-        $match: m
-    }, {
-        $group: {
-            _id: "$_user"
-        }
-    }, {
-        $group: {
-            _id: 1,
-            count : { $sum: 1 }
-        }
-    }]).exec();
-
-}
-
-
 module.exports.getKPIInfo = (req,res,next) => {
     const bdy = req.body;
 
@@ -65,6 +18,7 @@ module.exports.getKPIInfo = (req,res,next) => {
     var ts = dateEnd.getTime(),
         ts = ts - 86400*1000,
         dateStart = new Date(ts);
+
 
     Location.aggregate([{
         $match: {
