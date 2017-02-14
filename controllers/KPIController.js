@@ -60,6 +60,9 @@ module.exports.getKPIInfo = (req,res,next) => {
             }
         }
     }]).exec().then(r => {
+		if(!r || r.length == 0)
+			r = [{_id:1, countAll: 0, countNew: 0}];
+		
         res.send(201,r);
     }).catch(err => {
         log.APIError('Failed to retrieve KPI timeline data',err,req);
