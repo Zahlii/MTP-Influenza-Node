@@ -141,9 +141,9 @@ schema.statics.getForAskNewHealthReportUser = function (askForNewHealthReportThr
     }).exec();
 };
 
-schema.methods.deleteToken = function (token, cb) {
+schema.statics.deleteToken = function (token, cb) {
     log.info("Removing outdated device token " + token);
-    return this.update({$pull: { deviceTokens: token}}, cb);
+    return this.update({}, {$pull: {deviceTokens: token}}, { multi: true }, cb);
 };
 
 schema.methods.sendPushNotification = function (data, cb) {
@@ -156,7 +156,7 @@ schema.methods.sendPushNotification = function (data, cb) {
         pushAgent.sendPushNotification(currentToken, data, (err) => {
             if(err && err.length>0) {
                 push_errors.push(err);
-                this.deleteToken(err[0].device);
+                User.deleteToken(err[0].device);
             }
             if (++completed >= deviceTokens_length) {
                 var isError = push_errors.length > 0 ;
@@ -189,5 +189,7 @@ schema.methods.sendPushWarning = function (cb) {
         }
     });
 };
+
+
 
 module.exports.Schema = schema;

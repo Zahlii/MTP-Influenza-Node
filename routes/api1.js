@@ -16,6 +16,12 @@ module.exports = (server) => {
         return next();
     });
 
+    api1router.post('/user/logout', (req, res, next) => {
+        require('../controllers/UserController')
+            .logout(req, res, next)
+        return next();
+    });
+
     api1router.put('/user/authnormal', (req, res, next) => {
         require('../controllers/UserController')
             .authUser(req, res, next)

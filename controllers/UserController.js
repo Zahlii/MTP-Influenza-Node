@@ -227,3 +227,12 @@ module.exports.sendPushNotification = (req,res,next) => {
         }
     });
 };
+
+module.exports.logout = (req,res,next) => {
+    const token = req.body.token;
+    User.deleteToken(token, (err) => {
+        if (err) res.send(500, 'Could not delete token');
+        else res.send(200)
+    });
+    return next()
+};
