@@ -46,12 +46,13 @@ server.use((req, res, next) => {
         var r = res.getHeader("X-Response-Time");
         var url = res.info.url;
         var isWithCrypt = /(auth|register)/.test(url);
-        res.info.responseTime = r;
+
+        /*res.info.responseTime = r;
         var time = isWithCrypt ? config.get("SLA.maxTimeBCrypt") : config.get("SLA.maxTime");
         if(r > time)
-            log.APIError("High response time",null,res.info);
+            log.APIError("High response time",null,res.info);*/
 
-        log.info(res.info.method+"\t"+res.info.url+"\t"+r);
+        log.info(res.info.method+"\t"+res.info.url+"\t"+r+"\t"+JSON.stringify(res.info.body));
     });
     return next();
 });
