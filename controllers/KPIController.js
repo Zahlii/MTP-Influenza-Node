@@ -81,6 +81,8 @@ module.exports.getTimelineInfo = (req,res,next) => {
 
     var s = [[[bbox[0],bbox[1]],[bbox[0],bbox[3]],[bbox[2],bbox[3]],[bbox[2],bbox[1]],[bbox[0],bbox[1]]]];
 
+    //console.log(s);
+    
     Location.aggregate([{
         $match: {
             geo: {
@@ -113,7 +115,7 @@ module.exports.getTimelineInfo = (req,res,next) => {
                 },
                 u: "$_user"
             },
-            isNew: { $first : "$isNew" }
+            isNew: { $max : "$isNew" }
         }
     }, {
         $group: {
