@@ -39,7 +39,7 @@ function InsertNewHealthReport(bdy, currentUser,oldHR,now) {
 
 
     bdy.issuedOn = now;
-    bdy.validTo = +now + config.calc.defaultValidityDays*24*60*60*1000;
+    bdy.validTo = new Date(+now + config.calc.defaultValidityDays*24*60*60*1000);
     bdy.gender = currentUser.gender;
     bdy.age = helpers.calculateAge(currentUser.birthDate);
     bdy.healthScore = helpers.calculateHealthScore(bdy);
