@@ -184,7 +184,7 @@ schema.methods.sendPushWarning = function (cb) {
                 this.lastWarningMessage = new Date();
                 this.save();
                 locales.setLocale(this.settings.locale);
-                this.sendPushNotification({message:locales.__("PUSH_ALERT_FLU",location_length)}, cb);
+                this.sendPushNotification({message:locales.__("PUSH_ALERT_FLU",location_length), type:"PUSH_ALERT_FLU"}, cb);
             }
         }
     });

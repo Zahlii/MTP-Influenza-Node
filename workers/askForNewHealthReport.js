@@ -27,7 +27,7 @@ module.exports = function(input, done) {
                     u.lastHealthstateReminder = new Date();
                     u.save();
                     locales.setLocale(u.settings.locale);
-                    u.sendPushNotification({message: locales.__("PUSH_REMINDER_HEALTHSTATE")});
+                    u.sendPushNotification({message: locales.__("PUSH_REMINDER_HEALTHSTATE"), type:"PUSH_REMINDER_HEALTHSTATE"});
                 }
         }).catch(err => {
             log.APIError('Failed to get users for reminder',err,req);
