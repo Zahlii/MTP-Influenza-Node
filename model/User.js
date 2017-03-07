@@ -184,6 +184,7 @@ schema.methods.sendPushWarning = function (cb) {
                 this.lastWarningMessage = new Date();
                 this.save();
                 locales.setLocale(this.settings.locale);
+		log.info('Sending out push warning to ' + this._id);
                 this.sendPushNotification({message:locales.__("PUSH_ALERT_FLU",location_length), type:"PUSH_ALERT_FLU"}, cb);
             }
         }
