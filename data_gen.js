@@ -12,7 +12,7 @@ monogooseInitiator.initMongoose();
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
-const base = os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
+const base = os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8082" : "http://localhost:8082";
 
 var ID = 1;
 
@@ -22,6 +22,8 @@ function putRequest(url, data,cb) {
     url = base + url;
 
     //var t = Date.now();
+
+    console.log(data);
 
     http({
         url: url,
@@ -72,10 +74,17 @@ function rdate() {
 }
 console.log('ID'+DEL+'DATE'+DEL+'METHOD'+DEL+'URL'+DEL+'PROCESSING TIME[MS]'+DEL+'TOTAL TIME[MS]'+DEL+'HTTP STATUS'+DEL+'RESPONSE SIZE'+DEL+'ERROR');
 
-function r_uid(cb) {
-    User.aggregate([ { $sample: { size: 1 } }, { $project: { _id:1}} ]).exec(cb);
-}
+function r_uid(needsHR, cb) {
+    var pipe = [];
 
+    if(needsHR)
+        pipe.push({ $match:{ lastHealthReport: { $ne: null }}});
+
+    pipe.push({$sample: { size: 1 } });
+    pipe.push({$project: { _id:1}});
+
+    User.aggregate(pipe).exec(cb);
+}
 
 function rnd_healthstate(uid,cb) {
     putRequest("/api1/healthstate", {
@@ -105,19 +114,19 @@ fn_state();
 fn_loc();
 
 function fn_state() {
-    r_uid((err,doc) => {
+    r_uid(false,(err,doc) => {
         rnd_healthstate(doc[0]._id,() => {
-            var t = rnd(10000,30000);
-            //console.log('Waiting '+t);
+            var t = rnd(10*60*1000,60*60*1000);
+            console.log('Waiting '+t/60000);
             setTimeout(fn_state,t);
         });
     });
 }
 function fn_loc() {
-    r_uid((err,doc) => {
+    r_uid(true,(err,doc) => {
         rnd_location(doc[0]._id,() => {
-            var t = rnd(1000,3000);
-            //console.log('Waiting '+t);
+            var t = rnd(5*60*1000,30*60*1000);
+            console.log('Waiting '+t/60000);
             setTimeout(fn_loc,t);
         });
     });
