@@ -1,11 +1,11 @@
 const http = require('request');
 const os = require('os');
 const argv = require('optimist')
-    .default('u', 1)
-    .default('l', 1)
+    .default('u', 30)
+    .default('l', 0)
     .argv;
 
-const base = os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8080" : "http://localhost:8080";
+const base = os.hostname() == "wifo1-30" ? "https://wifo1-30.bwl.uni-mannheim.de:8082" : "http://localhost:8082";
 
 var ID = 1;
 
@@ -76,31 +76,10 @@ function run() {
         firstName: 'testuser',
         lastName: rstring(8),
         birthDate: rdate(),
-		deviceToken: "abc"
+		deviceToken: "abc",
+        locale: "de"
     },(bdy) => {
-		const uid = bdy._id;
 
-		putRequest("/api1/healthstate", {
-			_user: uid,
-			isSick: rbool(),
-			smileyRating: Math.floor(rnd(1, 5)),
-			hasHeadache: rbool(),
-			hasSoreThroat: rbool(),
-			hasCoughing: rbool(),
-			hasFever: rbool(),
-			hasRunningNose: rbool(),
-			hasLimbPain: rbool(),
-			lat: rlat(),
-			lng: rlng()
-		},(bdy) => {
-			for(var j=0;j<argv.l;j++) {
-				putRequest("/api1/location/report", {
-					_user: uid,
-					lat: rlat(),
-					lng: rlng()
-				});
-			}
-		});
     });
 
 }
