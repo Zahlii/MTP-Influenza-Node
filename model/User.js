@@ -156,7 +156,7 @@ schema.methods.sendPushNotification = function (data, cb) {
         pushAgent.sendPushNotification(currentToken, data, (err) => {
             if(err && err.length>0) {
                 push_errors.push(err);
-                User.deleteToken(err[0].device);
+                this.deleteToken(err[0].device);
             }
             if (++completed >= deviceTokens_length) {
                 var isError = push_errors.length > 0 ;
