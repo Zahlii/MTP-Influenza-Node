@@ -11,11 +11,11 @@
                 "poolSize": 40
             },
             "user": "mtp-influenza",
-            "pass": "JonSnowIsAlive"
+            "pass": "***"
         }
     },
     "APN": {
-        "passphrase":"influenza2016"
+        "passphrase":"***"
     },
     "calc": {
         "infectionHealthScoreThreshold":40,
